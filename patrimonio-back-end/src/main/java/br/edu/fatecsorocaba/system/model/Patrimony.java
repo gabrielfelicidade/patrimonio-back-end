@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Patrimony {
@@ -12,21 +14,33 @@ public class Patrimony {
 	@Id
 	@Column(name = "patrimony_id")
 	private int patrimonyId;
+	
 	@Column(name = "acquisition_process_id")
 	private String acquisitionProcessId;
+	
 	@Column(name = "serial_number")
 	private String serialNumber;
+	
 	private String description;
+	
 	@Column(name = "commercial_invoice")
 	private String commercialInvoice;
+	
 	private String model;
+	
 	private String brand;
+	
 	@Column(name = "additional_information")
 	private String additionalInformation;
+	
 	private BigDecimal value;
-	@Column(name = "location_id")
+	
+	@ManyToOne
+	@JoinColumn(name = "location_id")
 	private Location location;
-	@Column(name = "acquisition_method_id")
+	
+	@ManyToOne
+	@JoinColumn(name = "acquisition_method_id")
 	private AcquisitionMethod acquisitionMethod;
 
 	public int getPatrimonyId() {

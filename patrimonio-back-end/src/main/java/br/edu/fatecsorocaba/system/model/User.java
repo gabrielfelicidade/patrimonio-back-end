@@ -8,16 +8,20 @@ import javax.persistence.Id;
 
 @Entity
 public class User {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private int userId;
+
 	private String name;
+
 	private String username;
+
 	private String password;
-	@Column(name = "access_level")
-	private int accessLevel;
+
+	private int userlevel;
+
 	private boolean status;
 
 	public int getUserId() {
@@ -52,12 +56,12 @@ public class User {
 		this.password = password;
 	}
 
-	public int getAccessLevel() {
-		return accessLevel;
+	public int getUserlevel() {
+		return userlevel;
 	}
 
-	public void setAccessLevel(int accessLevel) {
-		this.accessLevel = accessLevel;
+	public void setUserlevel(int userlevel) {
+		this.userlevel = userlevel;
 	}
 
 	public boolean isStatus() {

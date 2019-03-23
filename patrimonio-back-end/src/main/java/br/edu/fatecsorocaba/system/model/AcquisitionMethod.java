@@ -5,14 +5,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Entity
+@Entity(name = "acquisitionmethod")
+@Table(name = "acquisitionmethod")
 public class AcquisitionMethod {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "acquisition_method_id")
 	private int acquisitionMethodId;
+	
 	private String description;
 
 	public int getAcquisitionMethodId() {

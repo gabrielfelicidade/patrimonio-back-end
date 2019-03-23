@@ -1,10 +1,13 @@
 package br.edu.fatecsorocaba.system.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Location {
@@ -13,8 +16,13 @@ public class Location {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "location_id")
 	private int locationId;
+	
 	private String description;
+	
 	private boolean status;
+	
+	@OneToMany(mappedBy = "location")
+	private List<Patrimony> patrimonies;
 
 	public int getLocationId() {
 		return locationId;
@@ -38,6 +46,14 @@ public class Location {
 
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+
+	public List<Patrimony> getPatrimonies() {
+		return patrimonies;
+	}
+
+	public void setPatrimonies(List<Patrimony> patrimonies) {
+		this.patrimonies = patrimonies;
 	}
 
 	@Override

@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Log {
@@ -15,10 +17,16 @@ public class Log {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "log_id")
 	private int logId;
+	
 	private Date date;
+	
 	@Column(name = "action_table")
 	private String actionTable;
+	
 	private String action;
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
 	private User user;
 
 	public int getLogId() {
