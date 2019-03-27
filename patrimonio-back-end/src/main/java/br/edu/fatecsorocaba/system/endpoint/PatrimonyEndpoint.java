@@ -37,14 +37,14 @@ public class PatrimonyEndpoint {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getById(@PathVariable("id") int id){
+	public ResponseEntity<?> getById(@PathVariable("id") Long id){
 		verifyIfpatrinomyExists(id);
 		Optional<Patrimony> patrinomy = repository.findById(id);
 		return new ResponseEntity<>(patrinomy, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") int id){
+	public ResponseEntity<?> delete(@PathVariable("id") Long id){
 		verifyIfpatrinomyExists(id);
 		repository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -57,7 +57,7 @@ public class PatrimonyEndpoint {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	public void verifyIfpatrinomyExists(int id) {
+	public void verifyIfpatrinomyExists(Long id) {
 		if(!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("patrinomy with ID " + id + " not found.");
 	}

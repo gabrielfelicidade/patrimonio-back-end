@@ -37,14 +37,14 @@ public class LocationEndpoint {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getById(@PathVariable("id") int id){
+	public ResponseEntity<?> getById(@PathVariable("id") Long id){
 		verifyIfLocationExists(id);
 		Optional<Location> location = repository.findById(id);
 		return new ResponseEntity<>(location, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") int id){
+	public ResponseEntity<?> delete(@PathVariable("id") Long id){
 		verifyIfLocationExists(id);
 		repository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -57,7 +57,7 @@ public class LocationEndpoint {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	public void verifyIfLocationExists(int id) {
+	public void verifyIfLocationExists(Long id) {
 		if(!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("Location with ID " + id + " not found.");
 	}

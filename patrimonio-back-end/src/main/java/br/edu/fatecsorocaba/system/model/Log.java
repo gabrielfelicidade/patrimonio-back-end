@@ -16,23 +16,23 @@ public class Log {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "log_id")
-	private int logId;
-	
+	private Long logId;
+
 	private Date date;
-	
+
 	private String tablename;
-	
+
 	private String action;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	public int getLogId() {
+	public Long getLogId() {
 		return logId;
 	}
 
-	public void setLogId(int logId) {
+	public void setLogId(Long logId) {
 		this.logId = logId;
 	}
 
@@ -72,7 +72,7 @@ public class Log {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + logId;
+		result = prime * result + ((logId == null) ? 0 : logId.hashCode());
 		return result;
 	}
 
@@ -85,7 +85,10 @@ public class Log {
 		if (getClass() != obj.getClass())
 			return false;
 		Log other = (Log) obj;
-		if (logId != other.logId)
+		if (logId == null) {
+			if (other.logId != null)
+				return false;
+		} else if (!logId.equals(other.logId))
 			return false;
 		return true;
 	}

@@ -37,14 +37,14 @@ public class UserEndpoint {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getById(@PathVariable("id") int id){
+	public ResponseEntity<?> getById(@PathVariable("id") Long id){
 		verifyIfuserExists(id);
 		Optional<User> user = repository.findById(id);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") int id){
+	public ResponseEntity<?> delete(@PathVariable("id") Long id){
 		verifyIfuserExists(id);
 		repository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -57,7 +57,7 @@ public class UserEndpoint {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	public void verifyIfuserExists(int id) {
+	public void verifyIfuserExists(Long id) {
 		if(!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("user with ID " + id + " not found.");
 	}

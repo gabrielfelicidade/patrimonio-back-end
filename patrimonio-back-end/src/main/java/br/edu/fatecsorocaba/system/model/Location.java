@@ -9,29 +9,32 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "locationId")
 public class Location {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "location_id")
-	private int locationId;
-	
+	private Long locationId;
+
 	private String description;
-	
+
 	private boolean status;
-	
+
 	@OneToMany(mappedBy = "location")
-	@JsonIgnoreProperties("location")
 	private List<Patrimony> patrimonies;
 
-	public int getLocationId() {
+	public Long getLocationId() {
 		return locationId;
 	}
 
-	public void setLocationId(int locationId) {
+	public void setLocationId(Long locationId) {
 		this.locationId = locationId;
 	}
 
@@ -50,8 +53,7 @@ public class Location {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	
-	//@JsonIgnore
+
 	public List<Patrimony> getPatrimonies() {
 		return patrimonies;
 	}
@@ -64,7 +66,7 @@ public class Location {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + locationId;
+		result = prime * result + ((locationId == null) ? 0 : locationId.hashCode());
 		return result;
 	}
 
@@ -77,7 +79,10 @@ public class Location {
 		if (getClass() != obj.getClass())
 			return false;
 		Location other = (Location) obj;
-		if (locationId != other.locationId)
+		if (locationId == null) {
+			if (other.locationId != null)
+				return false;
+		} else if (!locationId.equals(other.locationId))
 			return false;
 		return true;
 	}

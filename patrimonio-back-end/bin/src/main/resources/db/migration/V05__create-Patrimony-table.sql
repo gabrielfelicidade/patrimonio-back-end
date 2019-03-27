@@ -1,5 +1,5 @@
 CREATE TABLE [dbo].[Patrimony](
-	[patrimony_id] [bigint] NOT NULL PRIMARY KEY,
+	[patrimony_id] [int] NOT NULL PRIMARY KEY,
 	[acquisition_process_id] [varchar](20) NULL,
 	[serial_number] [varchar](15) NULL,
 	[description] [varchar](100) NOT NULL,

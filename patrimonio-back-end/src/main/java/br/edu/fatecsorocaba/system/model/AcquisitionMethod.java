@@ -14,15 +14,15 @@ public class AcquisitionMethod {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "acquisition_method_id")
-	private int acquisitionMethodId;
-	
+	private Long acquisitionMethodId;
+
 	private String description;
 
-	public int getAcquisitionMethodId() {
+	public Long getAcquisitionMethodId() {
 		return acquisitionMethodId;
 	}
 
-	public void setAcquisitionMethodId(int acquisitionMethodId) {
+	public void setAcquisitionMethodId(Long acquisitionMethodId) {
 		this.acquisitionMethodId = acquisitionMethodId;
 	}
 
@@ -38,7 +38,7 @@ public class AcquisitionMethod {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + acquisitionMethodId;
+		result = prime * result + ((acquisitionMethodId == null) ? 0 : acquisitionMethodId.hashCode());
 		return result;
 	}
 
@@ -51,7 +51,10 @@ public class AcquisitionMethod {
 		if (getClass() != obj.getClass())
 			return false;
 		AcquisitionMethod other = (AcquisitionMethod) obj;
-		if (acquisitionMethodId != other.acquisitionMethodId)
+		if (acquisitionMethodId == null) {
+			if (other.acquisitionMethodId != null)
+				return false;
+		} else if (!acquisitionMethodId.equals(other.acquisitionMethodId))
 			return false;
 		return true;
 	}

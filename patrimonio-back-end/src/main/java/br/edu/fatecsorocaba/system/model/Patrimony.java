@@ -8,49 +8,54 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "patrimonyId")
 public class Patrimony {
 
 	@Id
 	@Column(name = "patrimony_id")
-	private int patrimonyId;
-	
+	private Long patrimonyId;
+
 	@Column(name = "acquisition_process_id")
 	private String acquisitionProcessId;
-	
+
 	@Column(name = "serial_number")
 	private String serialNumber;
-	
+
 	private String description;
-	
+
 	@Column(name = "commercial_invoice")
 	private String commercialInvoice;
-	
+
 	private String model;
-	
+
 	private String brand;
-	
+
 	@Column(name = "additional_information")
 	private String additionalInformation;
-	
+
 	private BigDecimal value;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "location_id")
 	@JsonIgnoreProperties("patrimonies")
 	private Location location;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "acquisition_method_id")
 	private AcquisitionMethod acquisitionMethod;
 
-	public int getPatrimonyId() {
+	public Long getPatrimonyId() {
 		return patrimonyId;
 	}
 
-	public void setPatrimonyId(int patrimonyId) {
+	public void setPatrimonyId(Long patrimonyId) {
 		this.patrimonyId = patrimonyId;
 	}
 
@@ -138,7 +143,7 @@ public class Patrimony {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + patrimonyId;
+		result = prime * result + ((patrimonyId == null) ? 0 : patrimonyId.hashCode());
 		return result;
 	}
 
@@ -151,7 +156,10 @@ public class Patrimony {
 		if (getClass() != obj.getClass())
 			return false;
 		Patrimony other = (Patrimony) obj;
-		if (patrimonyId != other.patrimonyId)
+		if (patrimonyId == null) {
+			if (other.patrimonyId != null)
+				return false;
+		} else if (!patrimonyId.equals(other.patrimonyId))
 			return false;
 		return true;
 	}
