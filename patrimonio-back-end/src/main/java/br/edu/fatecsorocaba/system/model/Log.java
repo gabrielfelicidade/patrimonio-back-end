@@ -20,8 +20,7 @@ public class Log {
 	
 	private Date date;
 	
-	@Column(name = "action_table")
-	private String actionTable;
+	private String tablename;
 	
 	private String action;
 	
@@ -45,12 +44,12 @@ public class Log {
 		this.date = date;
 	}
 
-	public String getActionTable() {
-		return actionTable;
+	public String getTablename() {
+		return tablename;
 	}
 
-	public void setActionTable(String actionTable) {
-		this.actionTable = actionTable;
+	public void setTablename(String tablename) {
+		this.tablename = tablename;
 	}
 
 	public String getAction() {

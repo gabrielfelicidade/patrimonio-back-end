@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class Location {
 
@@ -22,6 +24,7 @@ public class Location {
 	private boolean status;
 	
 	@OneToMany(mappedBy = "location")
+	@JsonIgnoreProperties("location")
 	private List<Patrimony> patrimonies;
 
 	public int getLocationId() {
@@ -47,7 +50,8 @@ public class Location {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-
+	
+	//@JsonIgnore
 	public List<Patrimony> getPatrimonies() {
 		return patrimonies;
 	}

@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class Patrimony {
 
@@ -37,6 +39,7 @@ public class Patrimony {
 	
 	@ManyToOne
 	@JoinColumn(name = "location_id")
+	@JsonIgnoreProperties("patrimonies")
 	private Location location;
 	
 	@ManyToOne
