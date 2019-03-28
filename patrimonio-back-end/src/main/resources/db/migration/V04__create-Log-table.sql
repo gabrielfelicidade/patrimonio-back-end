@@ -3,5 +3,5 @@ CREATE TABLE [dbo].[Log](
 	[date] [date] NOT NULL,
 	[tablename] [varchar](25) NOT NULL,
 	[action] [varchar](10) NOT NULL,
-	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [User](user_id)
+	[user_id] [bigint] NOT NULL FOREIGN KEY REFERENCES [User](user_id)
 );

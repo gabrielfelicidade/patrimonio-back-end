@@ -32,34 +32,34 @@ public class UserEndpoint {
 
 	@PostMapping
 	public ResponseEntity<?> save(@RequestBody User user) {
-			user = repository.save(user);
-			return new ResponseEntity<>(user, HttpStatus.OK);
+		user = repository.save(user);
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getById(@PathVariable("id") Long id){
+	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfuserExists(id);
 		Optional<User> user = repository.findById(id);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") Long id){
+	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfuserExists(id);
 		repository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody User user){
+	public ResponseEntity<?> update(@RequestBody User user) {
 		verifyIfuserExists(user.getUserId());
 		repository.save(user);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	public void verifyIfuserExists(Long id) {
-		if(!repository.findById(id).isPresent())
-			throw new ResourceNotFoundException("user with ID " + id + " not found.");
+		if (!repository.findById(id).isPresent())
+			throw new ResourceNotFoundException("User with ID " + id + " not found.");
 	}
 
 }

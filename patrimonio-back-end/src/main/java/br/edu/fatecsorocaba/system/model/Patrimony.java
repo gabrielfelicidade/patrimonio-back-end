@@ -13,9 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(
-		  generator = ObjectIdGenerators.PropertyGenerator.class, 
-		  property = "patrimonyId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "patrimonyId", scope = Patrimony.class)
 public class Patrimony {
 
 	@Id

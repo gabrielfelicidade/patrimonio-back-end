@@ -13,9 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(
-		  generator = ObjectIdGenerators.PropertyGenerator.class, 
-		  property = "locationId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "locationId", scope = Location.class)
 public class Location {
 
 	@Id

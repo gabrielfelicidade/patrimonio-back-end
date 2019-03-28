@@ -32,33 +32,33 @@ public class LocationEndpoint {
 
 	@PostMapping
 	public ResponseEntity<?> save(@RequestBody Location location) {
-			location = repository.save(location);
-			return new ResponseEntity<>(location, HttpStatus.OK);
+		location = repository.save(location);
+		return new ResponseEntity<>(location, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getById(@PathVariable("id") Long id){
+	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfLocationExists(id);
 		Optional<Location> location = repository.findById(id);
 		return new ResponseEntity<>(location, HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") Long id){
+	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfLocationExists(id);
 		repository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody Location location){
+	public ResponseEntity<?> update(@RequestBody Location location) {
 		verifyIfLocationExists(location.getLocationId());
 		repository.save(location);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	public void verifyIfLocationExists(Long id) {
-		if(!repository.findById(id).isPresent())
+		if (!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("Location with ID " + id + " not found.");
 	}
 

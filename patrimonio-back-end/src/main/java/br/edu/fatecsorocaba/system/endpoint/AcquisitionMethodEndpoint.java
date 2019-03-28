@@ -32,34 +32,34 @@ public class AcquisitionMethodEndpoint {
 
 	@PostMapping
 	public ResponseEntity<?> save(@RequestBody AcquisitionMethod acquisitionMethod) {
-			acquisitionMethod = repository.save(acquisitionMethod);
-			return new ResponseEntity<>(acquisitionMethod, HttpStatus.OK);
+		acquisitionMethod = repository.save(acquisitionMethod);
+		return new ResponseEntity<>(acquisitionMethod, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getById(@PathVariable("id") Long id){
+	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfacquisitionMethodExists(id);
 		Optional<AcquisitionMethod> acquisitionMethod = repository.findById(id);
 		return new ResponseEntity<>(acquisitionMethod, HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") Long id){
+	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfacquisitionMethodExists(id);
 		repository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody AcquisitionMethod acquisitionMethod){
+	public ResponseEntity<?> update(@RequestBody AcquisitionMethod acquisitionMethod) {
 		verifyIfacquisitionMethodExists(acquisitionMethod.getAcquisitionMethodId());
 		repository.save(acquisitionMethod);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	public void verifyIfacquisitionMethodExists(Long id) {
-		if(!repository.findById(id).isPresent())
-			throw new ResourceNotFoundException("acquisitionMethod with ID " + id + " not found.");
+		if (!repository.findById(id).isPresent())
+			throw new ResourceNotFoundException("AcquisitionMethod with ID " + id + " not found.");
 	}
 
 }

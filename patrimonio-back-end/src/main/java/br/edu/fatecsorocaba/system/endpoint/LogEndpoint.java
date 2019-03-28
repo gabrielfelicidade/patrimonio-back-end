@@ -32,34 +32,34 @@ public class LogEndpoint {
 
 	@PostMapping
 	public ResponseEntity<?> save(@RequestBody Log log) {
-			log = repository.save(log);
-			return new ResponseEntity<>(log, HttpStatus.OK);
+		log = repository.save(log);
+		return new ResponseEntity<>(log, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getById(@PathVariable("id") Long id){
+	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIflogExists(id);
 		Optional<Log> log = repository.findById(id);
 		return new ResponseEntity<>(log, HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") Long id){
+	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIflogExists(id);
 		repository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody Log log){
+	public ResponseEntity<?> update(@RequestBody Log log) {
 		verifyIflogExists(log.getLogId());
 		repository.save(log);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	public void verifyIflogExists(Long id) {
-		if(!repository.findById(id).isPresent())
-			throw new ResourceNotFoundException("log with ID " + id + " not found.");
+		if (!repository.findById(id).isPresent())
+			throw new ResourceNotFoundException("Log with ID " + id + " not found.");
 	}
 
 }
