@@ -24,7 +24,7 @@ public class User {
 
 	private int userlevel;
 
-	private boolean status;
+	private boolean status = true;
 
 	public Long getUserId() {
 		return userId;

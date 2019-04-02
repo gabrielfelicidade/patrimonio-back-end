@@ -23,7 +23,7 @@ public class Location {
 
 	private String description;
 
-	private boolean status;
+	private boolean status = true;
 
 	@OneToMany(mappedBy = "location")
 	private List<Patrimony> patrimonies;
