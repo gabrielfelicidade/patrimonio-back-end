@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "[User]")
@@ -16,12 +18,16 @@ public class User {
 	@Column(name = "user_id")
 	private Long userId;
 
+	@NotEmpty(message = "The field 'name' cannot be null")
 	private String name;
 
+	@NotEmpty(message = "The field 'username' cannot be null")
 	private String username;
 
+	@NotEmpty(message = "The field 'password' cannot be null")
 	private String password;
 
+	@NotNull(message = "The field 'userlevel' cannot be null")
 	private int userlevel;
 
 	private boolean status = true;

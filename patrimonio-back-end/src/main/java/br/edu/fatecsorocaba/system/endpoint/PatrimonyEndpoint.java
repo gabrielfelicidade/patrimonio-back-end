@@ -1,6 +1,6 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
-import java.util.Optional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,6 @@ import br.edu.fatecsorocaba.system.repository.PatrimonyRepository;
 @RestController
 @RequestMapping("patrimonies")
 public class PatrimonyEndpoint {
-
 	@Autowired
 	private PatrimonyRepository repository;
 
@@ -31,18 +30,17 @@ public class PatrimonyEndpoint {
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
-
-	@PostMapping
-	public ResponseEntity<?> save(@RequestBody Patrimony patrinomy) {
-		patrinomy = repository.save(patrinomy);
-		return new ResponseEntity<>(patrinomy, HttpStatus.OK);
-	}
-
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfpatrinomyExists(id);
-		Optional<Patrimony> patrinomy = repository.findById(id);
-		return new ResponseEntity<>(patrinomy, HttpStatus.OK);
+		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
+	}
+
+	@PostMapping
+	public ResponseEntity<?> save(@Valid @RequestBody Patrimony patrinomy) {
+		//Verificar como criar o relacionamento com as outras classes.
+		return new ResponseEntity<>(repository.save(patrinomy), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
@@ -53,8 +51,10 @@ public class PatrimonyEndpoint {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody Patrimony patrinomy) {
+	public ResponseEntity<?> update(@Valid @RequestBody Patrimony patrinomy) {
+		//Antes verificar se o Id não é nulo.
 		verifyIfpatrinomyExists(patrinomy.getPatrimonyId());
+		//Verificar como criar o relacionamento com as outras classes.
 		repository.save(patrinomy);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

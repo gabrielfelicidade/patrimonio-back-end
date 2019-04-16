@@ -1,6 +1,6 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
-import java.util.Optional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,6 @@ import br.edu.fatecsorocaba.system.repository.LogRepository;
 @RestController
 @RequestMapping("logs")
 public class LogEndpoint {
-
 	@Autowired
 	private LogRepository repository;
 
@@ -32,17 +31,15 @@ public class LogEndpoint {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
 
-	@PostMapping
-	public ResponseEntity<?> save(@RequestBody Log log) {
-		log = repository.save(log);
-		return new ResponseEntity<>(log, HttpStatus.OK);
-	}
-
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIflogExists(id);
-		Optional<Log> log = repository.findById(id);
-		return new ResponseEntity<>(log, HttpStatus.OK);
+		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
+	}
+
+	@PostMapping
+	public ResponseEntity<?> save(@Valid @RequestBody Log log) {
+		return new ResponseEntity<>(repository.save(log), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
@@ -53,7 +50,7 @@ public class LogEndpoint {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody Log log) {
+	public ResponseEntity<?> update(@Valid @RequestBody Log log) {
 		verifyIflogExists(log.getLogId());
 		repository.save(log);
 		return new ResponseEntity<>(HttpStatus.OK);

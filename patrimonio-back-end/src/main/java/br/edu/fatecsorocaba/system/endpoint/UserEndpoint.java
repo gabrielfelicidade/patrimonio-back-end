@@ -1,6 +1,6 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
-import java.util.Optional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,6 @@ import br.edu.fatecsorocaba.system.repository.UserRepository;
 @RestController
 @RequestMapping("users")
 public class UserEndpoint {
-
 	@Autowired
 	private UserRepository repository;
 
@@ -32,16 +31,15 @@ public class UserEndpoint {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
 
-	@PostMapping
-	public ResponseEntity<?> save(@RequestBody User user) {
-		user = repository.save(user);
-		return new ResponseEntity<>(user, HttpStatus.OK);
-	}
-
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfuserExists(id);
-		Optional<User> user = repository.findById(id);
+		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
+	}
+
+	@PostMapping
+	public ResponseEntity<?> save(@Valid @RequestBody User user) {
+		user = repository.save(user);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
@@ -53,7 +51,8 @@ public class UserEndpoint {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody User user) {
+	public ResponseEntity<?> update(@Valid @RequestBody User user) {
+		//Antes verificar se o Id não é nulo.
 		verifyIfuserExists(user.getUserId());
 		repository.save(user);
 		return new ResponseEntity<>(HttpStatus.OK);

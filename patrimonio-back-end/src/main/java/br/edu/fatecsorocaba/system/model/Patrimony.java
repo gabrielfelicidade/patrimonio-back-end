@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,6 +20,7 @@ public class Patrimony {
 
 	@Id
 	@Column(name = "patrimony_id")
+	@NotNull(message = "The field 'patrimony id' cannot be null")
 	private Long patrimonyId;
 
 	@Column(name = "acquisition_process_id")
@@ -38,6 +41,7 @@ public class Patrimony {
 	@Column(name = "additional_information")
 	private String additionalInformation;
 
+	@Digits(integer = 8, fraction = 2, message = "The field 'value' should contain only two digits after precision")
 	private BigDecimal value;
 
 	@ManyToOne
@@ -161,5 +165,4 @@ public class Patrimony {
 			return false;
 		return true;
 	}
-
 }

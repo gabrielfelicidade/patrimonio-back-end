@@ -1,6 +1,6 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
-import java.util.Optional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,6 @@ import br.edu.fatecsorocaba.system.repository.AcquisitionMethodRepository;
 @RestController
 @RequestMapping("acquisitionmethods")
 public class AcquisitionMethodEndpoint {
-
 	@Autowired
 	private AcquisitionMethodRepository repository;
 
@@ -32,17 +31,15 @@ public class AcquisitionMethodEndpoint {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
 
-	@PostMapping
-	public ResponseEntity<?> save(@RequestBody AcquisitionMethod acquisitionMethod) {
-		acquisitionMethod = repository.save(acquisitionMethod);
-		return new ResponseEntity<>(acquisitionMethod, HttpStatus.OK);
-	}
-
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfacquisitionMethodExists(id);
-		Optional<AcquisitionMethod> acquisitionMethod = repository.findById(id);
-		return new ResponseEntity<>(acquisitionMethod, HttpStatus.OK);
+		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
+	}
+
+	@PostMapping
+	public ResponseEntity<?> save(@Valid @RequestBody AcquisitionMethod acquisitionMethod) {
+		return new ResponseEntity<>(repository.save(acquisitionMethod), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
@@ -53,7 +50,8 @@ public class AcquisitionMethodEndpoint {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody AcquisitionMethod acquisitionMethod) {
+	public ResponseEntity<?> update(@Valid @RequestBody AcquisitionMethod acquisitionMethod) {
+		//Antes verificar se o Id não é nulo.
 		verifyIfacquisitionMethodExists(acquisitionMethod.getAcquisitionMethodId());
 		repository.save(acquisitionMethod);
 		return new ResponseEntity<>(HttpStatus.OK);

@@ -1,6 +1,6 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
-import java.util.Optional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,6 @@ import br.edu.fatecsorocaba.system.repository.LocationRepository;
 @RestController
 @RequestMapping("locations")
 public class LocationEndpoint {
-
 	@Autowired
 	private LocationRepository repository;
 
@@ -31,18 +30,16 @@ public class LocationEndpoint {
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
-
-	@PostMapping
-	public ResponseEntity<?> save(@RequestBody Location location) {
-		location = repository.save(location);
-		return new ResponseEntity<>(location, HttpStatus.OK);
-	}
-
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfLocationExists(id);
-		Optional<Location> location = repository.findById(id);
-		return new ResponseEntity<>(location, HttpStatus.OK);
+		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
+	}
+
+	@PostMapping
+	public ResponseEntity<?> save(@Valid @RequestBody Location location) {
+		return new ResponseEntity<>(repository.save(location), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
@@ -53,7 +50,8 @@ public class LocationEndpoint {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody Location location) {
+	public ResponseEntity<?> update(@Valid @RequestBody Location location) {
+		//Antes verificar se o Id não é nulo.
 		verifyIfLocationExists(location.getLocationId());
 		repository.save(location);
 		return new ResponseEntity<>(HttpStatus.OK);

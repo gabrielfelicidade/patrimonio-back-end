@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -21,6 +22,7 @@ public class Location {
 	@Column(name = "location_id")
 	private Long locationId;
 
+	@NotEmpty(message = "The field 'description' cannot be null")
 	private String description;
 
 	private boolean status = true;
