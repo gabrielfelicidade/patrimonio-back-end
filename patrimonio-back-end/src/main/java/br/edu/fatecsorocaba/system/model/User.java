@@ -9,6 +9,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnLogin;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
+
 @Entity
 @Table(name = "[User]")
 public class User {
@@ -16,18 +20,19 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
+	@NotNull(groups = OnUpdate.class)
 	private Long userId;
 
-	@NotEmpty(message = "The field 'name' cannot be null")
+	@NotEmpty(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'name' cannot be null")
 	private String name;
 
-	@NotEmpty(message = "The field 'username' cannot be null")
+	@NotEmpty(groups = {OnUpdate.class, OnCreate.class, OnLogin.class}, message = "The field 'username' cannot be null")
 	private String username;
 
-	@NotEmpty(message = "The field 'password' cannot be null")
+	@NotEmpty(groups = {OnUpdate.class, OnCreate.class, OnLogin.class}, message = "The field 'password' cannot be null")
 	private String password;
 
-	@NotNull(message = "The field 'userlevel' cannot be null")
+	@NotNull(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'userlevel' cannot be null")
 	private int userlevel;
 
 	private boolean status = true;

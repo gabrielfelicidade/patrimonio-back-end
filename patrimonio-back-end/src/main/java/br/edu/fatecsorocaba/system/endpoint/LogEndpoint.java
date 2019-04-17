@@ -19,7 +19,7 @@ import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.Log;
 import br.edu.fatecsorocaba.system.repository.LogRepository;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("logs")
 public class LogEndpoint {

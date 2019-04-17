@@ -7,6 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 
 @Entity(name = "acquisitionmethod")
 @Table(name = "acquisitionmethod")
@@ -15,9 +19,10 @@ public class AcquisitionMethod {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "acquisition_method_id")
+	@NotNull(groups = OnUpdate.class)
 	private Long acquisitionMethodId;
 	
-	@NotEmpty(message = "The field 'description' cannot be null")
+	@NotEmpty(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'description' cannot be null")
 	private String description;
 
 	public Long getAcquisitionMethodId() {

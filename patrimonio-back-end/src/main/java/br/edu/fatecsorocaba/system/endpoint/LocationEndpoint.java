@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,15 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.Location;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 import br.edu.fatecsorocaba.system.repository.LocationRepository;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("locations")
 public class LocationEndpoint {
 	@Autowired
 	private LocationRepository repository;
-
+	
 	@GetMapping
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
@@ -50,8 +52,7 @@ public class LocationEndpoint {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> update(@Valid @RequestBody Location location) {
-		//Antes verificar se o Id não é nulo.
+	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Location location) {
 		verifyIfLocationExists(location.getLocationId());
 		repository.save(location);
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -61,5 +62,4 @@ public class LocationEndpoint {
 		if (!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("Location with ID " + id + " not found.");
 	}
-
 }

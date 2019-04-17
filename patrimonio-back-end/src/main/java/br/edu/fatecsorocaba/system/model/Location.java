@@ -2,6 +2,9 @@ package br.edu.fatecsorocaba.system.model;
 
 import java.util.List;
 
+import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -20,9 +24,10 @@ public class Location {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "location_id")
+	@NotNull(groups = OnUpdate.class)
 	private Long locationId;
 
-	@NotEmpty(message = "The field 'description' cannot be null")
+	@NotEmpty(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'description' cannot be null")
 	private String description;
 
 	private boolean status = true;

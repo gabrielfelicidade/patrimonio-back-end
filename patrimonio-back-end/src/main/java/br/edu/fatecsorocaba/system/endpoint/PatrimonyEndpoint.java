@@ -19,13 +19,13 @@ import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.Patrimony;
 import br.edu.fatecsorocaba.system.repository.PatrimonyRepository;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("patrimonies")
 public class PatrimonyEndpoint {
 	@Autowired
 	private PatrimonyRepository repository;
-
+	
 	@GetMapping
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
@@ -39,7 +39,6 @@ public class PatrimonyEndpoint {
 
 	@PostMapping
 	public ResponseEntity<?> save(@Valid @RequestBody Patrimony patrinomy) {
-		//Verificar como criar o relacionamento com as outras classes.
 		return new ResponseEntity<>(repository.save(patrinomy), HttpStatus.OK);
 	}
 
@@ -52,9 +51,10 @@ public class PatrimonyEndpoint {
 
 	@PutMapping
 	public ResponseEntity<?> update(@Valid @RequestBody Patrimony patrinomy) {
-		//Antes verificar se o Id não é nulo.
+		if (patrinomy.getPatrimonyId() == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 		verifyIfpatrinomyExists(patrinomy.getPatrimonyId());
-		//Verificar como criar o relacionamento com as outras classes.
 		repository.save(patrinomy);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -63,5 +63,4 @@ public class PatrimonyEndpoint {
 		if (!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("Patrinomy with ID " + id + " not found.");
 	}
-
 }

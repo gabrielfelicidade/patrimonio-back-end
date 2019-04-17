@@ -14,13 +14,16 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
+
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "patrimonyId", scope = Patrimony.class)
 public class Patrimony {
 
 	@Id
 	@Column(name = "patrimony_id")
-	@NotNull(message = "The field 'patrimony id' cannot be null")
+	@NotNull(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'patrimony id' cannot be null")
 	private Long patrimonyId;
 
 	@Column(name = "acquisition_process_id")

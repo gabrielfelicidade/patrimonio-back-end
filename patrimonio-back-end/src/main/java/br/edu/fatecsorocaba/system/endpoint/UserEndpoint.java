@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.User;
 import br.edu.fatecsorocaba.system.repository.UserRepository;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnLogin;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("users")
 public class UserEndpoint {
@@ -38,8 +42,17 @@ public class UserEndpoint {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> save(@Valid @RequestBody User user) {
+	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody User user) {
 		user = repository.save(user);
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+	
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@Validated(OnLogin.class) @RequestBody User user) {
+		user = repository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
+		if (user == null) {
+			throw new ResourceNotFoundException("Username or password are incorrect.");
+		}
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
@@ -51,8 +64,7 @@ public class UserEndpoint {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> update(@Valid @RequestBody User user) {
-		//Antes verificar se o Id não é nulo.
+	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody User user) {
 		verifyIfuserExists(user.getUserId());
 		repository.save(user);
 		return new ResponseEntity<>(HttpStatus.OK);

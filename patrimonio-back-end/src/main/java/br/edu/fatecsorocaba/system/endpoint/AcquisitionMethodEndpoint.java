@@ -1,10 +1,12 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.AcquisitionMethod;
 import br.edu.fatecsorocaba.system.repository.AcquisitionMethodRepository;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("acquisitionmethods")
 public class AcquisitionMethodEndpoint {
@@ -50,8 +53,7 @@ public class AcquisitionMethodEndpoint {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> update(@Valid @RequestBody AcquisitionMethod acquisitionMethod) {
-		//Antes verificar se o Id não é nulo.
+	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody AcquisitionMethod acquisitionMethod) {
 		verifyIfacquisitionMethodExists(acquisitionMethod.getAcquisitionMethodId());
 		repository.save(acquisitionMethod);
 		return new ResponseEntity<>(HttpStatus.OK);
