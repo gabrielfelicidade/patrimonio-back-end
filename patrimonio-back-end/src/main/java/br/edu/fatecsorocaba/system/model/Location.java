@@ -26,7 +26,7 @@ public class Location {
 	@Column(name = "location_id")
 	@NotNull(groups = OnUpdate.class)
 	private Long locationId;
-
+	
 	@NotEmpty(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'description' cannot be null")
 	private String description;
 

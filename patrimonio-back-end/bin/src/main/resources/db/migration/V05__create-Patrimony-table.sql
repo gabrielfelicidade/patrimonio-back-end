@@ -1,5 +1,5 @@
 CREATE TABLE [dbo].[Patrimony](
-	[patrimony_id] [int] NOT NULL PRIMARY KEY,
+	[patrimony_id] [bigint] NOT NULL PRIMARY KEY,
 	[acquisition_process_id] [varchar](20) NULL,
 	[serial_number] [varchar](15) NULL,
 	[description] [varchar](100) NOT NULL,
@@ -8,6 +8,6 @@ CREATE TABLE [dbo].[Patrimony](
 	[brand] [varchar](50) NULL,
 	[additional_information] [varchar](200) NULL,
 	[value] [decimal](10, 2) NULL,
-	[location_id] [int] NULL FOREIGN KEY REFERENCES Location(location_id),
-	[acquisition_method_id] [int] NULL FOREIGN KEY REFERENCES AcquisitionMethod(acquisition_method_id)
+	[location_id] [bigint] NULL FOREIGN KEY REFERENCES Location(location_id),
+	[acquisition_method_id] [bigint] NULL FOREIGN KEY REFERENCES AcquisitionMethod(acquisition_method_id)
 );

@@ -1,7 +1,5 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.Location;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 import br.edu.fatecsorocaba.system.repository.LocationRepository;
 
@@ -40,7 +39,7 @@ public class LocationEndpoint {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> save(@Valid @RequestBody Location location) {
+	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody Location location) {
 		return new ResponseEntity<>(repository.save(location), HttpStatus.OK);
 	}
 

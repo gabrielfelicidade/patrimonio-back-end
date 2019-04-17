@@ -1,6 +1,6 @@
 package br.edu.fatecsorocaba.system.error;
 
-public class ErrorDetail {
+public class ErrorDetails {
 	private String title;
 	private int status;
 	private String detail;
@@ -37,7 +37,7 @@ public class ErrorDetail {
 	public void setDeveloperMessage(String developerMessage) {
 		this.developerMessage = developerMessage;
 	}
-	public ErrorDetail(String title, int status, String detail, long timestamp, String developerMessage) {
+	public ErrorDetails(String title, int status, String detail, long timestamp, String developerMessage) {
 		this.title = title;
 		this.status = status;
 		this.detail = detail;

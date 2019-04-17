@@ -1,6 +1,6 @@
 package br.edu.fatecsorocaba.system.error;
 
-public class ValidationErrorDetails extends ErrorDetail {
+public class ValidationErrorDetails extends ErrorDetails {
 	private String fields;
 	private String fieldMessage;
 	

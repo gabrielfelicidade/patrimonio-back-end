@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.AcquisitionMethod;
 import br.edu.fatecsorocaba.system.repository.AcquisitionMethodRepository;
+import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -41,7 +42,7 @@ public class AcquisitionMethodEndpoint {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> save(@Valid @RequestBody AcquisitionMethod acquisitionMethod) {
+	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody AcquisitionMethod acquisitionMethod) {
 		return new ResponseEntity<>(repository.save(acquisitionMethod), HttpStatus.OK);
 	}
 
