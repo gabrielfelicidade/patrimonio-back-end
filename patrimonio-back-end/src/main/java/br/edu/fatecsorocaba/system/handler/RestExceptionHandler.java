@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(rnfDetails, HttpStatus.NOT_FOUND);
 	}
 	
+	@ExceptionHandler(PropertyReferenceException.class)
+	public ResponseEntity<Object> handlePropertyReferenceException(PropertyReferenceException prException){
+		ErrorDetails errorDetails = new ErrorDetails(
+				"Property do not exists", HttpStatus.BAD_REQUEST.value(),
+				prException.getMessage(), new Date().getTime(),
+				prException.getClass().getName()); 
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+	
 	@Override
 	public ResponseEntity<Object> handleMethodArgumentNotValid(
 			MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -48,7 +58,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	@Override
-	protected ResponseEntity<Object> handleExceptionInternal(
+	public ResponseEntity<Object> handleExceptionInternal(
 			Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ErrorDetails errorDetails = new ErrorDetails(
 				"Internal Exception", status.value(),

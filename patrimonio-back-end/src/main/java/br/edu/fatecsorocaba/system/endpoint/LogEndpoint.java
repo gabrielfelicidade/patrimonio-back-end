@@ -3,6 +3,7 @@ package br.edu.fatecsorocaba.system.endpoint;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,8 +28,8 @@ public class LogEndpoint {
 	private LogRepository repository;
 
 	@GetMapping
-	public ResponseEntity<?> getAll() {
-		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
+	public ResponseEntity<?> getAll(Pageable pageable) {
+		return new ResponseEntity<>(repository.findAll(pageable), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
