@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,22 +30,26 @@ public class LocationEndpoint {
 	private LocationRepository repository;
 	
 	@GetMapping
+	@PreAuthorize("hasRole('SEARCH')")
 	public ResponseEntity<?> getAll(Pageable pageable) {
 		return new ResponseEntity<>(repository.findAll(pageable), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('SEARCH')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfLocationExists(id);
 		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
 	}
 
 	@PostMapping
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody Location location) {
 		return new ResponseEntity<>(repository.save(location), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfLocationExists(id);
 		repository.deleteById(id);
@@ -52,6 +57,7 @@ public class LocationEndpoint {
 	}
 
 	@PutMapping
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Location location) {
 		verifyIfLocationExists(location.getLocationId());
 		repository.save(location);

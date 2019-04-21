@@ -17,7 +17,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.edu.fatecsorocaba.system.error.ErrorDetails;
-import br.edu.fatecsorocaba.system.error.ResourceNotFoundDetails;
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.error.ValidationErrorDetails;
 
@@ -26,11 +25,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException rfnException){
-		ResourceNotFoundDetails rnfDetails = new ResourceNotFoundDetails(
+		ErrorDetails errorDetails = new ErrorDetails(
 				"Resource not found", HttpStatus.NOT_FOUND.value(),
 				rfnException.getMessage(), new Date().getTime(),
 				rfnException.getClass().getName()); 
-		return new ResponseEntity<>(rnfDetails, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 	
 	@ExceptionHandler(PropertyReferenceException.class)
@@ -50,7 +49,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		String fieldMessages = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining("; "));
 		ValidationErrorDetails manvDetails = new ValidationErrorDetails(
 				"Field Validation Error", HttpStatus.BAD_REQUEST.value(),
-				"Field Validation Error", new Date().getTime(),
+				"The fields below does not match the expected values in validations", new Date().getTime(),
 				ex.getClass().getName(),
 				fields,
 				fieldMessages); 

@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class Log {
@@ -24,9 +22,7 @@ public class Log {
 
 	private String action;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	private String user_id;
 
 	public Long getLogId() {
 		return logId;
@@ -59,13 +55,13 @@ public class Log {
 	public void setAction(String action) {
 		this.action = action;
 	}
-
-	public User getUser() {
-		return user;
+	
+	public String getUser_id() {
+		return user_id;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
 	}
 
 	@Override

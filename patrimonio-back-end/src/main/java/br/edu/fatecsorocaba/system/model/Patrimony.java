@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -46,6 +48,10 @@ public class Patrimony {
 
 	@Digits(integer = 8, fraction = 2, message = "The field 'value' should contain only two digits after precision")
 	private BigDecimal value;
+	
+	@Min(value=0)
+	@Max(value=2)
+	private int status=2;
 
 	@ManyToOne
 	@JoinColumn(name = "location_id")
@@ -126,6 +132,14 @@ public class Patrimony {
 
 	public void setValue(BigDecimal value) {
 		this.value = value;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	public Location getLocation() {

@@ -6,8 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnLogin;
@@ -33,9 +38,9 @@ public class User {
 	private String password;
 
 	@NotNull(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'userlevel' cannot be null")
+	@Min(value=0)
+	@Max(value=2)
 	private int userlevel;
-
-	private boolean status = true;
 
 	public Long getUserId() {
 		return userId;
@@ -61,10 +66,12 @@ public class User {
 		this.username = username;
 	}
 
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
-
+	
+	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -75,14 +82,6 @@ public class User {
 
 	public void setUserlevel(int userlevel) {
 		this.userlevel = userlevel;
-	}
-
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
 	}
 
 	@Override
