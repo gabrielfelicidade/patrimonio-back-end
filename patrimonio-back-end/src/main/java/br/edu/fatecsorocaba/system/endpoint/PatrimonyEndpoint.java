@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,22 +30,26 @@ public class PatrimonyEndpoint {
 	private PatrimonyRepository repository;
 	
 	@GetMapping
+	@PreAuthorize("hasRole('SEARCH')")
 	public ResponseEntity<?> getAll(Pageable pageable) {
 		return new ResponseEntity<>(repository.findAll(pageable), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('SEARCH')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfpatrinomyExists(id);
 		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
 	}
 
 	@PostMapping
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody Patrimony patrinomy) {
 		return new ResponseEntity<>(repository.save(patrinomy), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfpatrinomyExists(id);
 		repository.deleteById(id);
@@ -52,6 +57,7 @@ public class PatrimonyEndpoint {
 	}
 
 	@PutMapping
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Patrimony patrinomy) {
 		if (patrinomy.getPatrimonyId() == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

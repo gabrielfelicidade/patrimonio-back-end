@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,7 +22,6 @@ import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.User;
 import br.edu.fatecsorocaba.system.repository.UserRepository;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
-//import br.edu.fatecsorocaba.system.validationInterfaces.OnLogin;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -56,16 +53,6 @@ public class UserEndpoint {
 		user = repository.save(user);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
-	
-//	@PostMapping("/login")
-//	public ResponseEntity<?> login(@Validated(OnLogin.class) @RequestBody User user, 
-//			Authentication authentication) {
-//		user = repository.findByUsername(user.getUsername());
-//		if (user == null) {
-//			throw new ResourceNotFoundException("Username or password are incorrect.");
-//		}
-//		return new ResponseEntity<>(user, HttpStatus.OK);
-//	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('ADMIN')")

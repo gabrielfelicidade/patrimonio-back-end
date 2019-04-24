@@ -51,7 +51,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
 				.signWith(SignatureAlgorithm.HS512, SECRET)
 				.compact();
-		response.getWriter().write(TOKEN_PREFIX + token);
-		response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+        String roles = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getAuthorities().toString();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(String.format("{\"token\": \"%s\",\n\"ROLES\": \"%s\"}", token, roles));
 	}
 }
