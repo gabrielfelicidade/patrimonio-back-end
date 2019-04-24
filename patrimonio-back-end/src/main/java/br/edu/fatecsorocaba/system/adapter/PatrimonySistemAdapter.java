@@ -14,7 +14,7 @@ public class PatrimonySistemAdapter implements WebMvcConfigurer {
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
 		PageableHandlerMethodArgumentResolver phmar = new PageableHandlerMethodArgumentResolver();
-		phmar.setFallbackPageable(PageRequest.of(0, 10));
+		phmar.setFallbackPageable(PageRequest.of(0, 50000));
 		resolvers.add(phmar);
 	}
 }

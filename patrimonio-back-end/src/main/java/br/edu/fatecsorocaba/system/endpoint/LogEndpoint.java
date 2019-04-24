@@ -3,7 +3,7 @@ package br.edu.fatecsorocaba.system.endpoint;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+//import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,8 +30,8 @@ public class LogEndpoint {
 
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> getAll(Pageable pageable) {
-		return new ResponseEntity<>(repository.findAll(pageable), HttpStatus.OK);
+	public ResponseEntity<?> getAll() {
+		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
