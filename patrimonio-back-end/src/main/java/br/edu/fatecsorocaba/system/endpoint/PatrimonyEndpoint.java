@@ -53,19 +53,31 @@ public class PatrimonyEndpoint {
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfpatrinomyExists(id);
 		repository.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	@PutMapping
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Patrimony patrinomy) {
 		if (patrinomy.getPatrimonyId() == null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 		verifyIfpatrinomyExists(patrinomy.getPatrimonyId());
 		repository.save(patrinomy);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
+	
+//	@PostMapping("/writeOff")
+//	@PreAuthorize("hasRole('USER')")
+//	public ResponseEntity<?> writeOff(@Validated(OnCreate.class) @RequestBody Patrimony patrinomy) {
+//		return new ResponseEntity<>(repository.save(patrinomy), HttpStatus.OK);
+//	}
+//	
+//	@PostMapping("/export")
+//	@PreAuthorize("hasRole('USER')")
+//	public ResponseEntity<?> export(@Validated(OnCreate.class) @RequestBody Patrimony patrinomy) {
+//		return new ResponseEntity<>(repository.save(patrinomy), HttpStatus.OK);
+//	}
 
 	public void verifyIfpatrinomyExists(Long id) {
 		if (!repository.findById(id).isPresent())

@@ -22,7 +22,7 @@ public class Log {
 
 	private String action;
 
-	private String user_id;
+	private String user;
 
 	public Long getLogId() {
 		return logId;
@@ -56,12 +56,12 @@ public class Log {
 		this.action = action;
 	}
 	
-	public String getUser_id() {
-		return user_id;
+	public String getUser() {
+		return user;
 	}
 
-	public void setUser_id(String user_id) {
-		this.user_id = user_id;
+	public void setUser(String user_id) {
+		this.user = user_id;
 	}
 
 	@Override

@@ -8,11 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,19 +44,19 @@ public class LogEndpoint {
 		return new ResponseEntity<>(repository.save(log), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
-		verifyIflogExists(id);
-		repository.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
+//	@DeleteMapping("/{id}")
+//	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+//		verifyIflogExists(id);
+//		repository.deleteById(id);
+//		return new ResponseEntity<>(null, HttpStatus.OK);
+//	}
 
-	@PutMapping
-	public ResponseEntity<?> update(@Valid @RequestBody Log log) {
-		verifyIflogExists(log.getLogId());
-		repository.save(log);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
+//	@PutMapping
+//	public ResponseEntity<?> update(@Valid @RequestBody Log log) {
+//		verifyIflogExists(log.getLogId());
+//		repository.save(log);
+//		return new ResponseEntity<>(null, HttpStatus.OK);
+//	}
 
 	public void verifyIflogExists(Long id) {
 		if (!repository.findById(id).isPresent())

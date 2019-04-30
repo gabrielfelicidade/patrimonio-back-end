@@ -53,7 +53,7 @@ public class AcquisitionMethodEndpoint {
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfacquisitionMethodExists(id);
 		repository.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	@PutMapping
@@ -61,7 +61,7 @@ public class AcquisitionMethodEndpoint {
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody AcquisitionMethod acquisitionMethod) {
 		verifyIfacquisitionMethodExists(acquisitionMethod.getAcquisitionMethodId());
 		repository.save(acquisitionMethod);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	public void verifyIfacquisitionMethodExists(Long id) {

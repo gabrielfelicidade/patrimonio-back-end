@@ -53,7 +53,7 @@ public class LocationEndpoint {
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfLocationExists(id);
 		repository.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	@PutMapping
@@ -61,7 +61,7 @@ public class LocationEndpoint {
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Location location) {
 		verifyIfLocationExists(location.getLocationId());
 		repository.save(location);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	public void verifyIfLocationExists(Long id) {

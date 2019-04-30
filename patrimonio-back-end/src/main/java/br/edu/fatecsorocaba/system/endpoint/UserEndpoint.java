@@ -60,7 +60,7 @@ public class UserEndpoint {
 			Authentication authentication) {
 		verifyIfuserExists(id);
 		repository.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	@PutMapping
@@ -69,7 +69,7 @@ public class UserEndpoint {
 			Authentication authentication) {
 		verifyIfuserExists(user.getUserId());
 		repository.save(user);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	public void verifyIfuserExists(Long id) {

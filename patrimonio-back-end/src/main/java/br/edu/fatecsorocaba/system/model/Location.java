@@ -30,8 +30,6 @@ public class Location {
 	@NotEmpty(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'description' cannot be null")
 	private String description;
 
-	private boolean status = true;
-
 	@OneToMany(mappedBy = "location")
 	private List<Patrimony> patrimonies;
 
@@ -49,14 +47,6 @@ public class Location {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
 	}
 
 	public List<Patrimony> getPatrimonies() {

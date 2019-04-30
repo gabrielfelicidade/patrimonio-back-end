@@ -3,5 +3,5 @@ CREATE TABLE [dbo].[Log](
 	[date] [date] NOT NULL,
 	[tablename] [varchar](25) NOT NULL,
 	[action] [varchar](10) NOT NULL,
-	[user_id] [varchar](50) NOT NULL
+	[user] [varchar](85) NOT NULL
 );
