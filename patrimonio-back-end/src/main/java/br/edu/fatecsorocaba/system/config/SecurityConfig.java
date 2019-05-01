@@ -2,6 +2,8 @@ package br.edu.fatecsorocaba.system.config;
 
 import static br.edu.fatecsorocaba.system.config.SecurityConstants.*;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,9 +24,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
+		config.addAllowedMethod(HttpMethod.PUT);
+        config.addAllowedMethod(HttpMethod.DELETE);
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
 //		Cors disable
 		http.cors()
-		.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+		.configurationSource(request -> config)
 		.and()
 		.csrf().disable()
 		.authorizeRequests()
