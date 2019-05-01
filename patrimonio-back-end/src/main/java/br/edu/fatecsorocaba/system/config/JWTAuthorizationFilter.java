@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import br.edu.fatecsorocaba.system.service.CustomUserDetailService;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.impl.TextCodec;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	private final CustomUserDetailService customUserDetailService;
@@ -33,11 +34,16 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 									FilterChain chain) throws IOException, ServletException {
 		String header = request.getHeader(HEADER_STRING);
 		if(header == null || !header.startsWith(TOKEN_PREFIX)) {
+			SecurityContextHolder.getContext().setAuthentication(null);
 			chain.doFilter(request, response);
 			return;
 		}
-		UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(request);
-		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+		try {
+	         UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(request);
+	         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+		} catch (Exception e) {
+			SecurityContextHolder.getContext().setAuthentication(null); // new
+		}
 		chain.doFilter(request, response);
 	}
 	
@@ -46,7 +52,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		if (token == null) return null;
 		String username = Jwts
 				.parser()
-				.setSigningKey(SECRET)
+				.setSigningKey(TextCodec.BASE64.encode(SECRET.getEncoded()))
 				.parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
 				.getBody()
 				.getSubject();

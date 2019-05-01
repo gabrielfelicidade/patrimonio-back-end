@@ -4,6 +4,7 @@ import static br.edu.fatecsorocaba.system.config.SecurityConstants.*;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,8 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.edu.fatecsorocaba.system.model.User;
+import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.TextCodec;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	private AuthenticationManager authenticationManager;
@@ -45,15 +48,27 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 											FilterChain chain, 
 											Authentication authResult) throws IOException, ServletException  {
 		String username = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername();
+        String roles = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getAuthorities().toString();
+        //
+        int userlevel = 0;
+        if (roles.contains("ADMIN"))
+        	userlevel = 2;
+        else if(roles.contains("USER"))
+        	userlevel = 1;
+        //
+		Header<?> header = Jwts.header();
+		header.setType("JWT");
+		//
 		String token = Jwts
 				.builder()
+				.setHeader((Map<String, Object>)header)
 				.setSubject(username)
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-				.signWith(SignatureAlgorithm.HS512, SECRET)
+				.signWith(SignatureAlgorithm.HS512, TextCodec.BASE64.encode(SECRET.getEncoded()))
+				.claim("userlevel", userlevel)
 				.compact();
-        String roles = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getAuthorities().toString();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(String.format("{\"token\": \"%s\",\n\"ROLES\": \"%s\"}", token, roles));
+		response.getWriter().write(String.format("{\"token\": \"%s\"}", token));
 	}
 }
