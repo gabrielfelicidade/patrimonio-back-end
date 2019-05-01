@@ -1,12 +1,10 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +20,6 @@ import br.edu.fatecsorocaba.system.repository.AcquisitionMethodRepository;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("acquisitionmethods")
 public class AcquisitionMethodEndpoint {
@@ -53,7 +50,7 @@ public class AcquisitionMethodEndpoint {
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfacquisitionMethodExists(id);
 		repository.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	@PutMapping

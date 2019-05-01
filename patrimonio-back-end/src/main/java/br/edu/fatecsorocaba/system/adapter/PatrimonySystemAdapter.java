@@ -9,7 +9,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class PatrimonySistemAdapter implements WebMvcConfigurer {
+public class PatrimonySystemAdapter implements WebMvcConfigurer {
 	
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -17,4 +17,5 @@ public class PatrimonySistemAdapter implements WebMvcConfigurer {
 		phmar.setFallbackPageable(PageRequest.of(0, 50000));
 		resolvers.add(phmar);
 	}
+	
 }
