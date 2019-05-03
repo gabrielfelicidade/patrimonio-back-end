@@ -1,10 +1,13 @@
 package br.edu.fatecsorocaba.system.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -21,9 +24,12 @@ public class AcquisitionMethod {
 	@Column(name = "acquisition_method_id")
 	@NotNull(groups = OnUpdate.class)
 	private Long acquisitionMethodId;
-	
-	@NotEmpty(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'description' cannot be null")
+
+	@NotEmpty(groups = { OnUpdate.class, OnCreate.class }, message = "The field 'description' cannot be null")
 	private String description;
+
+	@OneToMany(mappedBy = "acquisitionMethod")
+	private List<Patrimony> patrimonies;
 
 	public Long getAcquisitionMethodId() {
 		return acquisitionMethodId;
@@ -39,6 +45,14 @@ public class AcquisitionMethod {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public List<Patrimony> getPatrimonies() {
+		return patrimonies;
+	}
+
+	public void setPatrimonies(List<Patrimony> patrimonies) {
+		this.patrimonies = patrimonies;
 	}
 
 	@Override
