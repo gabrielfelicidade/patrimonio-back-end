@@ -65,7 +65,8 @@ public class UserEndpoint {
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody User user, 
 			Authentication authentication) {
 		verifyIfuserExists(user.getUserId());
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		if (user.getPassword() != null)
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
 		repository.save(user);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}

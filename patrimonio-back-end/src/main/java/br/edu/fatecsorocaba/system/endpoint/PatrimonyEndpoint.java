@@ -17,8 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.Patrimony;
 import br.edu.fatecsorocaba.system.repository.PatrimonyRepository;
+import br.edu.fatecsorocaba.system.util.ExcelGenerator;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.List;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 
 @RestController
 @RequestMapping("patrimonies")
@@ -70,11 +77,21 @@ public class PatrimonyEndpoint {
 //		return new ResponseEntity<>(repository.save(patrinomy), HttpStatus.OK);
 //	}
 //	
-//	@PostMapping("/export")
-//	@PreAuthorize("hasRole('USER')")
-//	public ResponseEntity<?> export(@Validated(OnCreate.class) @RequestBody Patrimony patrinomy) {
-//		return new ResponseEntity<>(repository.save(patrinomy), HttpStatus.OK);
-//	}
+	@GetMapping("/export/patrimonies.xlsx")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<InputStreamResource> excelCustomersReport() throws IOException {
+		List<Patrimony> patrimonies = repository.findAll();
+    
+		ByteArrayInputStream in = ExcelGenerator.patrimoniesToExcel(patrimonies);
+    
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=patrimonios.xlsx");
+    
+        return ResponseEntity
+                  .ok()
+                  .headers(headers)
+                  .body(new InputStreamResource(in));
+	}
 
 	public void verifyIfpatrinomyExists(Long id) {
 		if (!repository.findById(id).isPresent())

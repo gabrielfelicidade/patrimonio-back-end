@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		config.addAllowedMethod(HttpMethod.PUT);
         config.addAllowedMethod(HttpMethod.DELETE);
         config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-//		Cors disable
+//		HTTP Config
 		http.cors()
 		.configurationSource(request -> config)
 		.and()

@@ -34,7 +34,7 @@ public class User {
 	@NotEmpty(groups = {OnUpdate.class, OnCreate.class, OnLogin.class}, message = "The field 'username' cannot be null")
 	private String username;
 
-	@NotEmpty(groups = {OnUpdate.class, OnCreate.class, OnLogin.class}, message = "The field 'password' cannot be null")
+	@NotEmpty(groups = {OnCreate.class, OnLogin.class}, message = "The field 'password' cannot be null")
 	private String password;
 
 	@NotNull(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'userlevel' cannot be null")
