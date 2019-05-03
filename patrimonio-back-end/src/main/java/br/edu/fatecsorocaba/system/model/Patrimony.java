@@ -60,6 +60,7 @@ public class Patrimony {
 
 	@ManyToOne
 	@JoinColumn(name = "acquisition_method_id")
+	@JsonIgnoreProperties("patrimonies")
 	private AcquisitionMethod acquisitionMethod;
 
 	public Long getPatrimonyId() {
