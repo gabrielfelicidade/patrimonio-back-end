@@ -59,5 +59,4 @@ public class LogEndpoint {
 		if (!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("Log with ID " + id + " not found.");
 	}
-
 }

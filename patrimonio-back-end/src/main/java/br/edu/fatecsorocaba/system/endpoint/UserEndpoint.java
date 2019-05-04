@@ -75,5 +75,4 @@ public class UserEndpoint {
 		if (!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("User with ID " + id + " not found.");
 	}
-
 }
