@@ -32,7 +32,7 @@ public class UserEndpoint {
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> getAll() {
-		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(repository.findByUserIdNot(1L), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
@@ -72,7 +72,7 @@ public class UserEndpoint {
 	}
 
 	public void verifyIfuserExists(Long id) {
-		if (!repository.findById(id).isPresent())
+		if (!repository.findById(id).isPresent() || id==1)
 			throw new ResourceNotFoundException("User with ID " + id + " not found.");
 	}
 }

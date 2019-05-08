@@ -38,8 +38,8 @@ public class User {
 	private String password;
 
 	@NotNull(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'userlevel' cannot be null")
-	@Min(value=0)
-	@Max(value=2)
+	@Min(groups = {OnUpdate.class, OnCreate.class}, value=0)
+	@Max(groups = {OnUpdate.class, OnCreate.class}, value=2)
 	private int userlevel;
 
 	public Long getUserId() {

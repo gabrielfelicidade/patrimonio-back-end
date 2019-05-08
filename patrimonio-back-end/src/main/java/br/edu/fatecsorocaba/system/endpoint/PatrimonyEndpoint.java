@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class PatrimonyEndpoint {
 	@GetMapping
 	@PreAuthorize("hasRole('SEARCH')")
 	public ResponseEntity<?> getAll() {
-		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(repository.findByStatusNot(0), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
@@ -71,16 +72,38 @@ public class PatrimonyEndpoint {
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 	
-//	@PostMapping("/writeOff")
-//	@PreAuthorize("hasRole('USER')")
-//	public ResponseEntity<?> writeOff(@Validated(OnCreate.class) @RequestBody Patrimony patrinomy) {
-//		return new ResponseEntity<>(repository.save(patrinomy), HttpStatus.OK);
-//	}
-//	
+	@Transactional
+	@PostMapping("/writeoff")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> writeOff(@Validated(OnUpdate.class) @RequestBody List<Patrimony> patrimonies) {
+		for (Patrimony patrimony : patrimonies) {
+			patrimony.setStatus(0);
+			repository.save(patrimony);
+		}
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	@GetMapping("/pending")
+	@PreAuthorize("hasRole('SEARCH')")
+	public ResponseEntity<?> getAllPending() {
+		return new ResponseEntity<>(repository.findByStatus(1), HttpStatus.OK);
+	}
+	
+	@GetMapping("/writedoff")
+	@PreAuthorize("hasRole('SEARCH')")
+	public ResponseEntity<?> getAllWritedOff() {
+		return new ResponseEntity<>(repository.findByStatus(0), HttpStatus.OK);
+	}
+	
+	@Transactional
 	@GetMapping("/export/patrimonies.xlsx")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<InputStreamResource> excelCustomersReport() throws IOException {
-		List<Patrimony> patrimonies = repository.findAll();
+	public ResponseEntity<InputStreamResource> exportPatrimonies(@Validated(OnUpdate.class) 
+													@RequestBody List<Patrimony> patrimonies) throws IOException {
+		for (Patrimony patrimony : patrimonies) {
+			patrimony.setStatus(1);
+			repository.save(patrimony);
+		}
     
 		ByteArrayInputStream in = ExcelGenerator.patrimoniesToExcel(patrimonies);
     

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -46,11 +47,12 @@ public class Patrimony {
 	@Column(name = "additional_information")
 	private String additionalInformation;
 
-	@Digits(integer = 8, fraction = 2, message = "The field 'value' should contain only two digits after precision")
+	@Digits(groups = {OnUpdate.class, OnCreate.class}, integer = 8, fraction = 2, message = "The field 'value' should contain only two digits after precision")
+	@DecimalMin(groups = {OnUpdate.class, OnCreate.class}, value="1.00")
 	private BigDecimal value;
 	
-	@Min(value=0)
-	@Max(value=2)
+	@Min(groups = {OnUpdate.class, OnCreate.class}, value=0)
+	@Max(groups = {OnUpdate.class, OnCreate.class}, value=2)
 	private int status=2;
 
 	@ManyToOne
