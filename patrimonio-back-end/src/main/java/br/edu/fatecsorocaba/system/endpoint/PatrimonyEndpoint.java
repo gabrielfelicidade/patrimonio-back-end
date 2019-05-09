@@ -40,6 +40,12 @@ public class PatrimonyEndpoint {
 		return new ResponseEntity<>(repository.findByStatusNot(0), HttpStatus.OK);
 	}
 	
+	@GetMapping("/getAllNotWriteOff")
+	@PreAuthorize("hasRole('SEARCH')")
+	public ResponseEntity<?> getAllNotWriteOff() {
+		return new ResponseEntity<>(repository.findByStatus(2), HttpStatus.OK);
+	}
+	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasRole('SEARCH')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
@@ -96,7 +102,7 @@ public class PatrimonyEndpoint {
 	}
 	
 	@Transactional
-	@GetMapping("/export/patrimonies.xlsx")
+	@PostMapping("/export")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<InputStreamResource> exportPatrimonies(@Validated(OnUpdate.class) 
 													@RequestBody List<Patrimony> patrimonies) throws IOException {

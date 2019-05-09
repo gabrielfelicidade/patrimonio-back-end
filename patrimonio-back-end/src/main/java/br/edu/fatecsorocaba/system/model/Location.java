@@ -14,11 +14,9 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "locationId", scope = Location.class)
 public class Location {
 
 	@Id
@@ -31,6 +29,7 @@ public class Location {
 	private String description;
 
 	@OneToMany(mappedBy = "location")
+	@JsonIgnoreProperties(value = { "location" })
 	private List<Patrimony> patrimonies;
 
 	public Long getLocationId() {
