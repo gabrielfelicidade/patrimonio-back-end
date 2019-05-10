@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 
@@ -29,6 +31,7 @@ public class AcquisitionMethod {
 	private String description;
 
 	@OneToMany(mappedBy = "acquisitionMethod")
+	@JsonIgnoreProperties(value = { "acquisitionMethod" })
 	private List<Patrimony> patrimonies;
 
 	public Long getAcquisitionMethodId() {
