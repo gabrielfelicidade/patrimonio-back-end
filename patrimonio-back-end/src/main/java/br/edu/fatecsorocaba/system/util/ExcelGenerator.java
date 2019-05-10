@@ -5,36 +5,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 //import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import br.edu.fatecsorocaba.system.model.Patrimony;
 
 public class ExcelGenerator {
-	public static final short EXCEL_COLUMN_WIDTH_FACTOR = 256; 
-	public static final int UNIT_OFFSET_LENGTH = 7; 
-	public static final int[] UNIT_OFFSET_MAP = new int[] { 0, 36, 73, 109, 146, 182, 219 };
-	
-	public static short pixel2WidthUnits(int pxs) {
-	    short widthUnits = (short) (EXCEL_COLUMN_WIDTH_FACTOR * (pxs / UNIT_OFFSET_LENGTH)); 
-	    widthUnits += UNIT_OFFSET_MAP[(pxs % UNIT_OFFSET_LENGTH)];  
-	    return widthUnits; 
-	} 
  
 	public static ByteArrayInputStream patrimoniesToExcel(List<Patrimony> patrimonies) throws IOException {
 		String[] COLUMNs = {"Localização", "Número de Patrimônio", "Codigo do Processo de Aquisição", "Item", "Nota Fiscal",
 			   "Marca", "Modelo", "Número de Série", "Informações Complementares", "Valor",
 			   "Modalidade de Aquisição"};
-		int[] WIDTHs = {27, 13, 9, 38, 9, 13, 14,  16, 57, 16, 13};
+		int[] WIDTHs = {26, 13, 26, 38, 10, 13, 14, 16, 57, 16, 13};
 		try(Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();){
 //		   	CreationHelper createHelper = workbook.getCreationHelper();
 	  
@@ -50,9 +44,14 @@ public class ExcelGenerator {
 			cellFont.setColor(IndexedColors.BLACK.getIndex());
 			cellFont.setFontName("Arial");
 			cellFont.setFontHeightInPoints((short)10);
+			
+			CellStyle upHeaderCellStyle = workbook.createCellStyle();
+			upHeaderCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			upHeaderCellStyle.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());
 	  
 			CellStyle headerCellStyle = workbook.createCellStyle();
 			headerCellStyle.setFont(headerFont);
+		   	headerCellStyle.setWrapText(true);
 			headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 			headerCellStyle.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
 			headerCellStyle.setBorderBottom(BorderStyle.THIN);
@@ -63,11 +62,34 @@ public class ExcelGenerator {
 		   	headerCellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
 		   	headerCellStyle.setBorderTop(BorderStyle.THIN);
 		   	headerCellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
+		   	headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+		   	headerCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 		   
 		   	CellStyle rowCellStyle = workbook.createCellStyle();
 		   	rowCellStyle.setFont(cellFont);
 		   	rowCellStyle.setWrapText(true);
-	  
+		   	rowCellStyle.setBorderBottom(BorderStyle.THIN);
+		   	rowCellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		   	rowCellStyle.setBorderLeft(BorderStyle.THIN);
+		   	rowCellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+		   	rowCellStyle.setBorderRight(BorderStyle.THIN);
+		   	rowCellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
+		   	rowCellStyle.setBorderTop(BorderStyle.THIN);
+		   	rowCellStyle.setAlignment(HorizontalAlignment.LEFT);
+		   	rowCellStyle.setVerticalAlignment(VerticalAlignment.BOTTOM);
+		   	
+		   	// Row for Header
+		   	Row upHeaderRow = sheet.createRow(0);
+		   	// Header
+		   	for (int col = 0; col < COLUMNs.length; col++) {
+		   		Cell cell = upHeaderRow.createCell(col);
+		   		if (col == 0)
+	   				cell.setCellValue(" ");
+		   	}
+		   	
+		    sheet.addMergedRegion(new CellRangeAddress(0,0,0,10));  
+		    upHeaderRow.getCell(0).setCellStyle(upHeaderCellStyle);
+		    upHeaderRow.setHeightInPoints(45);
 		   	// Row for Header
 		   	Row headerRow = sheet.createRow(1);
 		   	
@@ -77,6 +99,7 @@ public class ExcelGenerator {
 		   		cell.setCellValue(COLUMNs[col]);
 		   		cell.setCellStyle(headerCellStyle);
 		   	}
+		   	headerRow.setHeight((short)-1);
 	  
 		   	int rowIdx = 2;
 		   	for (Patrimony patrimony : patrimonies) {
@@ -135,7 +158,7 @@ public class ExcelGenerator {
 		   		row.getCell(cellindex++).setCellStyle(rowCellStyle);
 		   		//
 		   		if (patrimony.getValue() != null)
-		   			row.createCell(cellindex).setCellValue(patrimony.getValue().toString());
+		   			row.createCell(cellindex).setCellValue("R$" + patrimony.getValue().toString());
 		   		else
 		   			row.createCell(cellindex).setCellValue("");
 		   		row.getCell(cellindex++).setCellStyle(rowCellStyle);
@@ -151,7 +174,7 @@ public class ExcelGenerator {
 
 			   
 		   	for (int i = 0; i < COLUMNs.length; i++) {
-		   		sheet.setColumnWidth(i, pixel2WidthUnits(WIDTHs[i])*10);
+		   		sheet.setColumnWidth(i, WIDTHs[i]*256);
 		   	}
 		   	
 		   	workbook.write(out);
