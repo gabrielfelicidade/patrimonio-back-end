@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-//import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -30,7 +29,6 @@ public class ExcelGenerator {
 			   "Modalidade de Aquisição"};
 		int[] WIDTHs = {26, 13, 26, 38, 10, 13, 14, 16, 57, 16, 13};
 		try(Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();){
-//		   	CreationHelper createHelper = workbook.getCreationHelper();
 	  
 			Sheet sheet = workbook.createSheet("patrimonios");
 	  
@@ -157,8 +155,10 @@ public class ExcelGenerator {
 		   			row.createCell(cellindex).setCellValue("");
 		   		row.getCell(cellindex++).setCellStyle(rowCellStyle);
 		   		//
-		   		if (patrimony.getValue() != null)
-		   			row.createCell(cellindex).setCellValue("R$" + patrimony.getValue().toString());
+		   		if (patrimony.getValue() != null) {
+		   			row.createCell(cellindex).setCellValue(patrimony.getValue().toString());
+//		   			row.getCell(cellindex).getCellStyle().setDataFormat(workbook.createDataFormat().getFormat("R$ #.##0;-R$ #.##0"));
+		   		}
 		   		else
 		   			row.createCell(cellindex).setCellValue("");
 		   		row.getCell(cellindex++).setCellStyle(rowCellStyle);

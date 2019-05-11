@@ -27,26 +27,26 @@ public class LocationEndpoint {
 	private LocationRepository repository;
 	
 	@GetMapping
-	@PreAuthorize("hasRole('SEARCH')")
+	@PreAuthorize("hasRole('BASIC')")
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('SEARCH')")
+	@PreAuthorize("hasRole('BASIC')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfLocationExists(id);
 		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
 	}
 
 	@PostMapping
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody Location location) {
 		return new ResponseEntity<>(repository.save(location), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfLocationExists(id);
 		repository.deleteById(id);
@@ -54,7 +54,7 @@ public class LocationEndpoint {
 	}
 
 	@PutMapping
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Location location) {
 		verifyIfLocationExists(location.getLocationId());
 		repository.save(location);

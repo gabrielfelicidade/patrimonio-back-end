@@ -1,6 +1,7 @@
 package br.edu.fatecsorocaba.system.model;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,6 +52,9 @@ public class Patrimony {
 	@Min(groups = {OnUpdate.class, OnCreate.class}, value=0)
 	@Max(groups = {OnUpdate.class, OnCreate.class}, value=2)
 	private int status=2;
+	
+	@Column(name = "writeoff_date")
+	private Date writeOffDate;
 
 	@ManyToOne
 	@JoinColumn(name = "location_id")
@@ -140,6 +144,14 @@ public class Patrimony {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	
+	public Date getWriteOffDate() {
+		return writeOffDate;
+	}
+
+	public void setWriteOffDate(Date writeOffDate) {
+		this.writeOffDate = writeOffDate;
 	}
 
 	public Location getLocation() {

@@ -32,11 +32,11 @@ public class UserEndpoint {
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> getAll() {
-		return new ResponseEntity<>(repository.findByUserIdNot(1L), HttpStatus.OK);
+		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfuserExists(id);
 		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
@@ -61,7 +61,7 @@ public class UserEndpoint {
 	}
 
 	@PutMapping
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody User user, 
 			Authentication authentication) {
 		verifyIfuserExists(user.getUserId());
@@ -72,7 +72,7 @@ public class UserEndpoint {
 	}
 
 	public void verifyIfuserExists(Long id) {
-		if (!repository.findById(id).isPresent() || id==1)
+		if (!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("User with ID " + id + " not found.");
 	}
 }

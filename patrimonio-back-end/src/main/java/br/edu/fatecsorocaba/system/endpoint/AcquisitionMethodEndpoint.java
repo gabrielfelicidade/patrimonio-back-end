@@ -27,26 +27,26 @@ public class AcquisitionMethodEndpoint {
 	private AcquisitionMethodRepository repository;
 
 	@GetMapping
-	@PreAuthorize("hasRole('SEARCH')")
+	@PreAuthorize("hasRole('BASIC')")
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('SEARCH')")
+	@PreAuthorize("hasRole('BASIC')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfacquisitionMethodExists(id);
 		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
 	}
 
 	@PostMapping
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody AcquisitionMethod acquisitionMethod) {
 		return new ResponseEntity<>(repository.save(acquisitionMethod), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfacquisitionMethodExists(id);
 		repository.deleteById(id);
@@ -54,7 +54,7 @@ public class AcquisitionMethodEndpoint {
 	}
 
 	@PutMapping
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody AcquisitionMethod acquisitionMethod) {
 		verifyIfacquisitionMethodExists(acquisitionMethod.getAcquisitionMethodId());
 		repository.save(acquisitionMethod);

@@ -24,6 +24,8 @@ import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.List;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -35,32 +37,32 @@ public class PatrimonyEndpoint {
 	private PatrimonyRepository repository;
 	
 	@GetMapping
-	@PreAuthorize("hasRole('SEARCH')")
+	@PreAuthorize("hasRole('BASIC')")
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<>(repository.findByStatusNot(0), HttpStatus.OK);
 	}
 	
-	@GetMapping("/getAllNotWriteOff")
-	@PreAuthorize("hasRole('SEARCH')")
-	public ResponseEntity<?> getAllNotWriteOff() {
-		return new ResponseEntity<>(repository.findByStatus(2), HttpStatus.OK);
-	}
-	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('SEARCH')")
+	@PreAuthorize("hasRole('BASIC')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfpatrinomyExists(id);
 		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
 	}
+	
+	@GetMapping("/getByStatus/{status}")
+	@PreAuthorize("hasRole('BASIC')")
+	public ResponseEntity<?> getAllByStatus(@PathVariable("status") int status) {
+		return new ResponseEntity<>(repository.findByStatus(status), HttpStatus.OK);
+	}
 
 	@PostMapping
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody Patrimony patrinomy) {
 		return new ResponseEntity<>(repository.save(patrinomy), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		verifyIfpatrinomyExists(id);
 		repository.deleteById(id);
@@ -68,7 +70,7 @@ public class PatrimonyEndpoint {
 	}
 	
 	@PutMapping
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Patrimony patrinomy) {
 		if (patrinomy.getPatrimonyId() == null) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -79,31 +81,8 @@ public class PatrimonyEndpoint {
 	}
 	
 	@Transactional
-	@PostMapping("/writeoff")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> writeOff(@Validated(OnUpdate.class) @RequestBody List<Patrimony> patrimonies) {
-		for (Patrimony patrimony : patrimonies) {
-			patrimony.setStatus(0);
-			repository.save(patrimony);
-		}
-		return new ResponseEntity<>(null, HttpStatus.OK);
-	}
-	
-	@GetMapping("/pending")
-	@PreAuthorize("hasRole('SEARCH')")
-	public ResponseEntity<?> getAllPending() {
-		return new ResponseEntity<>(repository.findByStatus(1), HttpStatus.OK);
-	}
-	
-	@GetMapping("/writedoff")
-	@PreAuthorize("hasRole('SEARCH')")
-	public ResponseEntity<?> getAllWritedOff() {
-		return new ResponseEntity<>(repository.findByStatus(0), HttpStatus.OK);
-	}
-	
-	@Transactional
 	@PostMapping("/export")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<InputStreamResource> exportPatrimonies(@Validated(OnUpdate.class) 
 													@RequestBody List<Patrimony> patrimonies) throws IOException {
 		for (Patrimony patrimony : patrimonies) {
@@ -120,6 +99,29 @@ public class PatrimonyEndpoint {
                   .ok()
                   .headers(headers)
                   .body(new InputStreamResource(in));
+	}
+	
+	@Transactional
+	@PostMapping("/cancelWriteOff")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
+	public ResponseEntity<?> cancelWriteOff(@Validated(OnUpdate.class) @RequestBody List<Patrimony> patrimonies) {
+		for (Patrimony patrimony : patrimonies) {
+			patrimony.setStatus(2);
+			repository.save(patrimony);
+		}
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	@Transactional
+	@PostMapping("/writeOff")
+	@PreAuthorize("hasRole('INTERMEDIARY')")
+	public ResponseEntity<?> writeOff(@Validated(OnUpdate.class) @RequestBody List<Patrimony> patrimonies) {
+		for (Patrimony patrimony : patrimonies) {
+			patrimony.setStatus(0);
+			patrimony.setWriteOffDate(Date.from(Instant.now()));
+			repository.save(patrimony);
+		}
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	public void verifyIfpatrinomyExists(Long id) {

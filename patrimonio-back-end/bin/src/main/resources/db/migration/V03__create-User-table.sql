@@ -6,4 +6,6 @@ CREATE TABLE [dbo].[User](
 	[userlevel] [int] NOT NULL
 );
 
-INSERT INTO [dbo].[User] VALUES('Developer', 'dev', '$2a$10$oi1EvPZe.9WezPQwnUKVou8xwcUPy7YUqBbAHQIa2tac0OFa5JH9u', 2)
+INSERT INTO [dbo].[User] VALUES('Administrador', 'admin', '$2a$10$yEm6uUAVQM5Z2zQxBH/Nb.oN5lwS7IhSUO4zR6lPJ6L52dZC26bVu', 2);
+/* Remover após desenvolvimento */
+INSERT INTO [dbo].[User] VALUES('Developer', 'dev', '$2a$10$oi1EvPZe.9WezPQwnUKVou8xwcUPy7YUqBbAHQIa2tac0OFa5JH9u', 2);

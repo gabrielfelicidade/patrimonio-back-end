@@ -25,12 +25,12 @@ public class CustomUserDetailService implements UserDetailsService {
 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = Optional.ofNullable(repository.findByUsername(username)).orElseThrow(()-> new UsernameNotFoundException("User not found"));
-		List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList("ROLE_SEARCH");
+		List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList("ROLE_BASIC");
 		if (user.getUserlevel() == 2) {
-			authorityList = AuthorityUtils.createAuthorityList("ROLE_SEARCH", "ROLE_USER", "ROLE_ADMIN");
+			authorityList = AuthorityUtils.createAuthorityList("ROLE_BASIC", "ROLE_INTERMEDIARY", "ROLE_ADMIN");
 		}
 		else if(user.getUserlevel() == 1) {
-			authorityList = AuthorityUtils.createAuthorityList("ROLE_SEARCH", "ROLE_USER");
+			authorityList = AuthorityUtils.createAuthorityList("ROLE_BASIC", "ROLE_INTERMEDIARY");
 		}
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorityList);
 	}
