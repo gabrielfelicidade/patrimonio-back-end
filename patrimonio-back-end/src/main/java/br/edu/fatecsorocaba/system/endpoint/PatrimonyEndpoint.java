@@ -86,7 +86,7 @@ public class PatrimonyEndpoint {
 	@PostMapping("/export")
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<InputStreamResource> exportPatrimonies(@Validated(OnUpdate.class) 
-													@RequestBody List<Patrimony> patrimonies) throws IOException, EncryptedDocumentException, InvalidFormatException {
+													@RequestBody List<Patrimony> patrimonies) throws IOException {
 		for (Patrimony patrimony : patrimonies) {
 			patrimony.setStatus(1);
 			repository.save(patrimony);

@@ -7,8 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -19,7 +17,7 @@ import br.edu.fatecsorocaba.system.model.Patrimony;
 
 public class ExcelGenerator {
 
-	public static ByteArrayInputStream patrimoniesToExcel(List<Patrimony> patrimonies) throws IOException, EncryptedDocumentException, InvalidFormatException {
+	public static ByteArrayInputStream patrimoniesToExcel(List<Patrimony> patrimonies) throws IOException {
         File file = ResourceUtils.getFile("classpath:templates\\template.xlsx");
         try(XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(file.getAbsolutePath())); ByteArrayOutputStream out = new ByteArrayOutputStream();){
         	XSSFSheet sheet = workbook.getSheetAt(0);
