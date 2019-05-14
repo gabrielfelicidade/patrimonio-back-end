@@ -31,13 +31,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		config.addAllowedMethod(HttpMethod.PUT);
         config.addAllowedMethod(HttpMethod.DELETE);
         config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-//		HTTP Config
+        //
 		http.cors()
 		.configurationSource(request -> config)
 		.and()
 		.csrf().disable()
 		.authorizeRequests()
 		.antMatchers(HttpMethod.GET, LOGIN_URL).permitAll()
+		//Dev ->> .antMatchers("/patrimonies/export").permitAll()
 		.and()
 			.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
 		.and()

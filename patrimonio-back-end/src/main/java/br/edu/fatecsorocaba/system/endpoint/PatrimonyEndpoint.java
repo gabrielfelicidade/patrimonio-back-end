@@ -1,5 +1,7 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,7 +86,7 @@ public class PatrimonyEndpoint {
 	@PostMapping("/export")
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<InputStreamResource> exportPatrimonies(@Validated(OnUpdate.class) 
-													@RequestBody List<Patrimony> patrimonies) throws IOException {
+													@RequestBody List<Patrimony> patrimonies) throws IOException, EncryptedDocumentException, InvalidFormatException {
 		for (Patrimony patrimony : patrimonies) {
 			patrimony.setStatus(1);
 			repository.save(patrimony);
