@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.edu.fatecsorocaba.system.validationInterfaces.OnChangePassword;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnLogin;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
@@ -34,7 +35,7 @@ public class User {
 	@NotEmpty(groups = {OnUpdate.class, OnCreate.class, OnLogin.class}, message = "The field 'username' cannot be null")
 	private String username;
 
-	@NotEmpty(groups = {OnCreate.class, OnLogin.class}, message = "The field 'password' cannot be null")
+	@NotEmpty(groups = {OnCreate.class, OnLogin.class, OnChangePassword.class}, message = "The field 'password' cannot be null")
 	private String password;
 
 	@NotNull(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'userlevel' cannot be null")

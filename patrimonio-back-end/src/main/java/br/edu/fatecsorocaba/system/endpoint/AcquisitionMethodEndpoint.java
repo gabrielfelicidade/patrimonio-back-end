@@ -59,8 +59,8 @@ public class AcquisitionMethodEndpoint {
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetail) {
 		verifyIfacquisitionMethodExists(id);
-		logService.saveLog("Método de Aquisição", "Exclusão ID: " + id, userDetail.getUsername());
 		repository.deleteById(id);
+		logService.saveLog("Método de Aquisição", "Exclusão, ID: " + id, userDetail.getUsername());
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 	
@@ -70,9 +70,9 @@ public class AcquisitionMethodEndpoint {
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody AcquisitionMethod acquisitionMethod,
 									@AuthenticationPrincipal UserDetails userDetail) {
 		verifyIfacquisitionMethodExists(acquisitionMethod.getAcquisitionMethodId());
-		logService.saveLog("Método de Aquisição", "Alteração ID: " + acquisitionMethod.getAcquisitionMethodId(),
-							userDetail.getUsername());
 		repository.save(acquisitionMethod);
+		logService.saveLog("Método de Aquisição", "Alteração, ID: " + acquisitionMethod.getAcquisitionMethodId(),
+				userDetail.getUsername());
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 

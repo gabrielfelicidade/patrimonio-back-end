@@ -19,13 +19,13 @@ public class LogEndpoint {
 	private LogRepository repository;
 
 	@GetMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('BASIC')")
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('BASIC')")
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIflogExists(id);
 		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
