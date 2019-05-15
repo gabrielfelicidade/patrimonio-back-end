@@ -1,6 +1,7 @@
 package br.edu.fatecsorocaba.system.model;
 
-import java.sql.Date;
+import java.time.Instant;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +23,16 @@ public class Log {
 
 	private String action;
 
+	@Column(name = "user_id")
 	private String user;
+
+	public Log(String tablename, String action, String user) {
+		super();
+		this.date = Date.from(Instant.now());
+		this.tablename = tablename;
+		this.action = action;
+		this.user = user;
+	}
 
 	public Long getLogId() {
 		return logId;

@@ -15,14 +15,15 @@ import br.edu.fatecsorocaba.system.model.User;
 import br.edu.fatecsorocaba.system.repository.UserRepository;
 
 @Component
-public class CustomUserDetailService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 	private final UserRepository repository;
 		
 	@Autowired
-	public CustomUserDetailService(UserRepository repository) {
+	public CustomUserDetailsService(UserRepository repository) {
 		this.repository = repository;
 	}
-
+	
+	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = Optional.ofNullable(repository.findByUsername(username)).orElseThrow(()-> new UsernameNotFoundException("User not found"));
 		List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList("ROLE_BASIC");

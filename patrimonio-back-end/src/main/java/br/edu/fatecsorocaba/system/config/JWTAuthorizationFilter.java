@@ -15,15 +15,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import br.edu.fatecsorocaba.system.service.CustomUserDetailService;
+import br.edu.fatecsorocaba.system.service.CustomUserDetailsService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.TextCodec;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-	private final CustomUserDetailService customUserDetailService;
+	private final CustomUserDetailsService customUserDetailService;
 
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager,
-			CustomUserDetailService customUserDetailService) {
+			CustomUserDetailsService customUserDetailService) {
 		super(authenticationManager);
 		this.customUserDetailService = customUserDetailService;
 	}
@@ -57,6 +57,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 				.getBody()
 				.getSubject();
 		UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
-		return username != null ? new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities()) : null;
+		return username != null ? new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()) : null;
 	}
 }

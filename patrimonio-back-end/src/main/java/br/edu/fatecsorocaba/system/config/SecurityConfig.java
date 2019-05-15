@@ -17,13 +17,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 
-import br.edu.fatecsorocaba.system.service.CustomUserDetailService;
+import br.edu.fatecsorocaba.system.service.CustomUserDetailsService;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
-	private CustomUserDetailService customUserDetailsService;
+	private CustomUserDetailsService customUserDetailsService;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception{
-		auth.userDetailsService(customUserDetailsService).passwordEncoder(new BCryptPasswordEncoder());;
+		auth.userDetailsService(customUserDetailsService).passwordEncoder(new BCryptPasswordEncoder());
 	}
 	
 	@Bean
