@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.fatecsorocaba.system.config.CustomUserDetails;
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.AcquisitionMethod;
 import br.edu.fatecsorocaba.system.repository.AcquisitionMethodRepository;
@@ -49,18 +49,20 @@ public class AcquisitionMethodEndpoint {
 	@PostMapping
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody AcquisitionMethod acquisitionMethod,
-											@AuthenticationPrincipal UserDetails userDetail) {
-		logService.saveLog("Método de Aquisição", "Inserção", userDetail.getUsername());
-		return new ResponseEntity<>(repository.save(acquisitionMethod), HttpStatus.OK);
+											@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		acquisitionMethod = repository.saveAndFlush(acquisitionMethod);
+		logService.saveLog("Cadastro de Métodos de Aquisição", "Inserção, ID: " + acquisitionMethod.getAcquisitionMethodId(),
+				customUserDetails);
+		return new ResponseEntity<>(acquisitionMethod, HttpStatus.OK);
 	}
 	
 	@Transactional
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('INTERMEDIARY')")
-	public ResponseEntity<?> delete(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetail) {
+	public ResponseEntity<?> delete(@PathVariable("id") Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		verifyIfacquisitionMethodExists(id);
 		repository.deleteById(id);
-		logService.saveLog("Método de Aquisição", "Exclusão, ID: " + id, userDetail.getUsername());
+		logService.saveLog("Edição de Métodos de Aquisição", "Exclusão, ID: " + id, customUserDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 	
@@ -68,11 +70,11 @@ public class AcquisitionMethodEndpoint {
 	@PutMapping
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody AcquisitionMethod acquisitionMethod,
-									@AuthenticationPrincipal UserDetails userDetail) {
+									@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		verifyIfacquisitionMethodExists(acquisitionMethod.getAcquisitionMethodId());
 		repository.save(acquisitionMethod);
-		logService.saveLog("Método de Aquisição", "Alteração, ID: " + acquisitionMethod.getAcquisitionMethodId(),
-				userDetail.getUsername());
+		logService.saveLog("Edição de Métodos de Aquisição", "Alteração, ID: " + acquisitionMethod.getAcquisitionMethodId(),
+				customUserDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 

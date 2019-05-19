@@ -38,7 +38,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.csrf().disable()
 		.authorizeRequests()
 		.antMatchers(HttpMethod.GET, LOGIN_URL).permitAll()
-		//Dev ->> .antMatchers("/patrimonies/export").permitAll()
 		.and()
 			.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
 		.and()

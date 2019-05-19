@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.fatecsorocaba.system.config.CustomUserDetails;
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.Location;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
@@ -49,18 +49,19 @@ public class LocationEndpoint {
 	@PostMapping
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody Location location,
-								  @AuthenticationPrincipal UserDetails userDetail) {
-		logService.saveLog("Localização", "Inserção", userDetail.getUsername());
-		return new ResponseEntity<>(repository.save(location), HttpStatus.OK);
+								  @AuthenticationPrincipal CustomUserDetails userDetails) {
+		location = repository.saveAndFlush(location);
+		logService.saveLog("Cadastro de Localizações", "Inserção, ID: " + location.getLocationId(), userDetails);
+		return new ResponseEntity<>(location, HttpStatus.OK);
 	}
 
 	@Transactional
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('INTERMEDIARY')")
-	public ResponseEntity<?> delete(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetail) {
+	public ResponseEntity<?> delete(@PathVariable("id") Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		verifyIfLocationExists(id);
 		repository.deleteById(id);
-		logService.saveLog("Localização", "Exclusão, ID: " + id, userDetail.getUsername());
+		logService.saveLog("Edição de Localizações", "Exclusão, ID: " + id, userDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
@@ -68,11 +69,10 @@ public class LocationEndpoint {
 	@PutMapping
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Location location, 
-									@AuthenticationPrincipal UserDetails userDetail) {
+									@AuthenticationPrincipal CustomUserDetails userDetails) {
 		verifyIfLocationExists(location.getLocationId());
 		repository.save(location);
-		logService.saveLog("Localização", "Alteração, ID: " + location.getLocationId(),
-				userDetail.getUsername());
+		logService.saveLog("Edição de Localizações", "Alteração, ID: " + location.getLocationId(), userDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 

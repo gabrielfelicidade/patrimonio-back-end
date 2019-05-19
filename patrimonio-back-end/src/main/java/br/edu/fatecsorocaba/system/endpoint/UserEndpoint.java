@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.fatecsorocaba.system.config.CustomUserDetails;
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.User;
 import br.edu.fatecsorocaba.system.repository.UserRepository;
@@ -31,9 +31,9 @@ import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
 public class UserEndpoint {
 	@Autowired
 	private UserRepository repository;
-	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	@Autowired
 	private LogService logService;
+	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
@@ -52,10 +52,10 @@ public class UserEndpoint {
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody User user, 
-			@AuthenticationPrincipal UserDetails userDetail) {
+			@AuthenticationPrincipal CustomUserDetails customCustomUserDetails) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user = repository.save(user);
-		logService.saveLog("Usuário", "Inserção", userDetail.getUsername());
+		user = repository.saveAndFlush(user);
+		logService.saveLog("Cadastro de Usuários", "Inserção, ID: " + user.getUserId(), customCustomUserDetails);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
@@ -63,10 +63,10 @@ public class UserEndpoint {
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id, 
-			@AuthenticationPrincipal UserDetails userDetail) {
+			@AuthenticationPrincipal CustomUserDetails customCustomUserDetails) {
 		verifyIfuserExists(id);
 		repository.deleteById(id);
-		logService.saveLog("Usuário", "Exclusão, ID: " + id, userDetail.getUsername());
+		logService.saveLog("Edição de Usuários", "Exclusão, ID: " + id, customCustomUserDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
@@ -74,13 +74,13 @@ public class UserEndpoint {
 	@PutMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody User user, 
-			@AuthenticationPrincipal UserDetails userDetail) {
+			@AuthenticationPrincipal CustomUserDetails customCustomUserDetails) {
 		verifyIfuserExists(user.getUserId());
 		if (user.getPassword() != null)
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 		repository.save(user);
-		logService.saveLog("Usuário", "Alteração, ID: " + user.getUserId(),
-				userDetail.getUsername());
+		logService.saveLog("Edição de Usuários", "Alteração, ID: " + user.getUserId(),
+				customCustomUserDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 	
@@ -88,13 +88,13 @@ public class UserEndpoint {
 	@PutMapping("/changePassword")
 	@PreAuthorize("hasRole('BASIC')")
 	public ResponseEntity<?> changePassword(@Validated(OnChangePassword.class) @RequestBody User user, 
-			@AuthenticationPrincipal UserDetails userDetail) {
+			@AuthenticationPrincipal CustomUserDetails customCustomUserDetails) {
 		String password = user.getPassword();
-		user = repository.findByUsername(userDetail.getUsername());
+		user = repository.findByUsername(customCustomUserDetails.getUsername());
 		user.setPassword(passwordEncoder.encode(password));
 		repository.save(user);
-		logService.saveLog("Usuário", "Alteração de Senha",
-				userDetail.getUsername());
+		logService.saveLog("Altera Senha", "Alteração de Senha",
+				customCustomUserDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 

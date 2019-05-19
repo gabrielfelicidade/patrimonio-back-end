@@ -18,18 +18,19 @@ public class Log {
 	private Long logId;
 
 	private Date date;
-
-	private String tablename;
+	
+	@Column(name="interfacename")
+	private String interfaceName;
 
 	private String action;
 
 	@Column(name = "user_id")
 	private String user;
 
-	public Log(String tablename, String action, String user) {
+	public Log(String interfaceName, String action, String user) {
 		super();
 		this.date = Date.from(Instant.now());
-		this.tablename = tablename;
+		this.interfaceName = interfaceName;
 		this.action = action;
 		this.user = user;
 	}
@@ -50,12 +51,12 @@ public class Log {
 		this.date = date;
 	}
 
-	public String getTablename() {
-		return tablename;
+	public String getInterfaceName() {
+		return interfaceName;
 	}
 
-	public void setTablename(String tablename) {
-		this.tablename = tablename;
+	public void setInterfaceName(String interfaceName) {
+		this.interfaceName = interfaceName;
 	}
 
 	public String getAction() {

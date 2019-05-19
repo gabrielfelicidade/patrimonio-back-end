@@ -6,11 +6,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import br.edu.fatecsorocaba.system.config.CustomUserDetails;
 import br.edu.fatecsorocaba.system.model.User;
 import br.edu.fatecsorocaba.system.repository.UserRepository;
 
@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	}
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = Optional.ofNullable(repository.findByUsername(username)).orElseThrow(()-> new UsernameNotFoundException("User not found"));
 		List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList("ROLE_BASIC");
 		if (user.getUserlevel() == 2) {
@@ -33,6 +33,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 		else if(user.getUserlevel() == 1) {
 			authorityList = AuthorityUtils.createAuthorityList("ROLE_BASIC", "ROLE_INTERMEDIARY");
 		}
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorityList);
+		return new CustomUserDetails(user.getName(), user.getUsername(), user.getPassword(), authorityList);
 	}
 }

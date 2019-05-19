@@ -20,12 +20,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.TextCodec;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-	private final CustomUserDetailsService customUserDetailService;
+	private final CustomUserDetailsService customUserDetailsService;
 
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager,
-			CustomUserDetailsService customUserDetailService) {
+			CustomUserDetailsService customUserDetailsService) {
 		super(authenticationManager);
-		this.customUserDetailService = customUserDetailService;
+		this.customUserDetailsService = customUserDetailsService;
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 				.parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
 				.getBody()
 				.getSubject();
-		UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
+		UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 		return username != null ? new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()) : null;
 	}
 }

@@ -47,25 +47,18 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 											HttpServletResponse response, 
 											FilterChain chain, 
 											Authentication authResult) throws IOException, ServletException  {
-		String username = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername();
-        String roles = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getAuthorities().toString();
-        //
-        int userlevel = 0;
-        if (roles.contains("ADMIN"))
-        	userlevel = 2;
-        else if(roles.contains("USER"))
-        	userlevel = 1;
-        //
+		CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
 		Header<?> header = Jwts.header();
 		header.setType("JWT");
 		//
 		String token = Jwts
 				.builder()
 				.setHeader((Map<String, Object>)header)
-				.setSubject(username)
+				.setSubject(customUserDetails.getUsername())
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
 				.signWith(SignatureAlgorithm.HS512, TextCodec.BASE64.encode(SECRET.getEncoded()))
-				.claim("userlevel", userlevel)
+				.claim("userlevel", customUserDetails.getUserlevel())
+				.claim("name", customUserDetails.getName())
 				.compact();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
