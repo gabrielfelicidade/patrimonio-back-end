@@ -34,6 +34,9 @@ public class Log {
 		this.action = action;
 		this.user = user;
 	}
+	
+	public Log() {
+	}
 
 	public Long getLogId() {
 		return logId;
