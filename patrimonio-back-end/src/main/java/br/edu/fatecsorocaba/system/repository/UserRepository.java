@@ -6,4 +6,5 @@ import br.edu.fatecsorocaba.system.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	User findByUsername(String username);
+	User findByUserIdNotAndUsername(Long userId, String username);
 }

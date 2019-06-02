@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.mapping.PropertyReferenceException;
+import javax.persistence.EntityNotFoundException;
+
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,6 @@ import br.edu.fatecsorocaba.system.error.ValidationErrorDetails;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException rfnException){
 		ErrorDetails errorDetails = new ErrorDetails(
@@ -32,12 +33,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 	
-	@ExceptionHandler(PropertyReferenceException.class)
-	public ResponseEntity<Object> handlePropertyReferenceException(PropertyReferenceException prException){
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException cvException){
+		String message;
+		try {
+			message = cvException.getCause().getMessage();
+		}catch (NullPointerException e) {
+			message = cvException.getMessage();
+		}
 		ErrorDetails errorDetails = new ErrorDetails(
-				"Property do not exists", HttpStatus.BAD_REQUEST.value(),
-				prException.getMessage(), new Date().getTime(),
-				prException.getClass().getName()); 
+				"Constraint violation", HttpStatus.BAD_REQUEST.value(),
+				message, new Date().getTime(),
+				cvException.getClass().getName()); 
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(EntityNotFoundException.class)
+	protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException enfException) {
+		ErrorDetails errorDetails = new ErrorDetails(
+				"Entity not found", HttpStatus.BAD_REQUEST.value(),
+				enfException.getMessage(), new Date().getTime(),
+				enfException.getClass().getName()); 
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 	
@@ -48,12 +64,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		String fields = fieldErrors.stream().map(FieldError::getField).collect(Collectors.joining("; "));
 		String fieldMessages = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining("; "));
 		ValidationErrorDetails manvDetails = new ValidationErrorDetails(
-				"Field Validation Error", HttpStatus.BAD_REQUEST.value(),
+				"Field Validation Error", HttpStatus.PRECONDITION_FAILED.value(),
 				"The fields below does not match the expected values in validations", new Date().getTime(),
 				ex.getClass().getName(),
 				fields,
 				fieldMessages); 
-		return new ResponseEntity<>(manvDetails, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(manvDetails, HttpStatus.PRECONDITION_FAILED);
 	}
 	
 	@Override

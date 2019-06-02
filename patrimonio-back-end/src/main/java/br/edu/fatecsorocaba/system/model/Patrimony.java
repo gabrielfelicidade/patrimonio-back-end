@@ -14,6 +14,9 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
@@ -59,11 +62,13 @@ public class Patrimony {
 	@ManyToOne
 	@JoinColumn(name = "location_id")
 	@JsonIgnoreProperties("patrimonies")
+	@NotFound(action=NotFoundAction.EXCEPTION)
 	private Location location;
 
 	@ManyToOne
 	@JoinColumn(name = "acquisition_method_id")
 	@JsonIgnoreProperties("patrimonies")
+	@NotFound(action=NotFoundAction.EXCEPTION)
 	private AcquisitionMethod acquisitionMethod;
 
 	public Long getPatrimonyId() {

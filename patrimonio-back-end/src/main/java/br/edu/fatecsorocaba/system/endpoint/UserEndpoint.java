@@ -1,5 +1,6 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,7 @@ public class UserEndpoint {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody User user, 
 			@AuthenticationPrincipal CustomUserDetails customCustomUserDetails) {
+		verifyIfuserExistsPOST(user.getUsername());
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user = repository.saveAndFlush(user);
 		logService.saveLog("Cadastro de Usuários", "Inserção, ID: " + user.getUserId(), customCustomUserDetails);
@@ -75,9 +77,12 @@ public class UserEndpoint {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody User user, 
 			@AuthenticationPrincipal CustomUserDetails customCustomUserDetails) {
-		verifyIfuserExists(user.getUserId());
+		verifyIfuserExistsPUT(user.getUserId(), user.getUsername());
+		User userBase = repository.findById(user.getUserId()).orElse(null);
 		if (user.getPassword() != null)
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
+		else
+			user.setPassword(userBase.getPassword());
 		repository.save(user);
 		logService.saveLog("Edição de Usuários", "Alteração, ID: " + user.getUserId(),
 				customCustomUserDetails);
@@ -97,9 +102,19 @@ public class UserEndpoint {
 				customCustomUserDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
-
+	
 	public void verifyIfuserExists(Long id) {
 		if (!repository.findById(id).isPresent())
-			throw new ResourceNotFoundException("User with ID " + id + " not found.");
+			throw new ResourceNotFoundException("Usuário com o código " + id + " não encontrado.");
+	}
+	
+	public void verifyIfuserExistsPOST(String username) {
+		if (repository.findByUsername(username) != null)
+			throw new ConstraintViolationException("Usuário \"" + username + "\" já existe.", null, "Unique");
+	}
+	
+	public void verifyIfuserExistsPUT(Long id, String username) {
+		if (repository.findByUserIdNotAndUsername(id, username) != null)
+			throw new ConstraintViolationException("Já existe um usuário \"" + username + "\".", null, "Unique");
 	}
 }

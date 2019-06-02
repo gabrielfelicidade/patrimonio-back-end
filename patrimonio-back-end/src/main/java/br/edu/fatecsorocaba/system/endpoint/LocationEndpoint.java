@@ -1,5 +1,6 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,7 @@ public class LocationEndpoint {
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody Location location,
 								  @AuthenticationPrincipal CustomUserDetails userDetails) {
+		verifyIfLocationExistsPOST(location.getDescription());
 		location = repository.saveAndFlush(location);
 		logService.saveLog("Cadastro de Localizações", "Inserção, ID: " + location.getLocationId(), userDetails);
 		return new ResponseEntity<>(location, HttpStatus.OK);
@@ -70,7 +72,7 @@ public class LocationEndpoint {
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Location location, 
 									@AuthenticationPrincipal CustomUserDetails userDetails) {
-		verifyIfLocationExists(location.getLocationId());
+		verifyIfLocationExistsPUT(location.getLocationId(), location.getDescription());
 		repository.save(location);
 		logService.saveLog("Edição de Localizações", "Alteração, ID: " + location.getLocationId(), userDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
@@ -78,6 +80,16 @@ public class LocationEndpoint {
 
 	public void verifyIfLocationExists(Long id) {
 		if (!repository.findById(id).isPresent())
-			throw new ResourceNotFoundException("Location with ID " + id + " not found.");
+			throw new ResourceNotFoundException("Localização com o código " + id + " não encontrado.");
+	}
+	
+	public void verifyIfLocationExistsPOST(String description) {
+		if (repository.findByDescription(description) != null)
+			throw new ConstraintViolationException("Localização com a descrição \"" + description + "\" já existe.", null, "Unique");
+	}
+	
+	public void verifyIfLocationExistsPUT(Long id, String description) {
+		if (repository.findByLocationIdNotAndDescription(id, description) != null)
+			throw new ConstraintViolationException("Já existe uma outra localização com a descrição \"" + description + "\".", null, "Unique");
 	}
 }

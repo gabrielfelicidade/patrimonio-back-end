@@ -1,5 +1,6 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,7 @@ public class AcquisitionMethodEndpoint {
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody AcquisitionMethod acquisitionMethod,
 											@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		verifyIfacquisitionMethodExistsPOST(acquisitionMethod.getDescription());
 		acquisitionMethod = repository.saveAndFlush(acquisitionMethod);
 		logService.saveLog("Cadastro de Métodos de Aquisição", "Inserção, ID: " + acquisitionMethod.getAcquisitionMethodId(),
 				customUserDetails);
@@ -71,7 +73,7 @@ public class AcquisitionMethodEndpoint {
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody AcquisitionMethod acquisitionMethod,
 									@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		verifyIfacquisitionMethodExists(acquisitionMethod.getAcquisitionMethodId());
+		verifyIfacquisitionMethodExistsPUT(acquisitionMethod.getAcquisitionMethodId(), acquisitionMethod.getDescription());
 		repository.save(acquisitionMethod);
 		logService.saveLog("Edição de Métodos de Aquisição", "Alteração, ID: " + acquisitionMethod.getAcquisitionMethodId(),
 				customUserDetails);
@@ -80,6 +82,16 @@ public class AcquisitionMethodEndpoint {
 
 	public void verifyIfacquisitionMethodExists(Long id) {
 		if (!repository.findById(id).isPresent())
-			throw new ResourceNotFoundException("AcquisitionMethod with ID " + id + " not found.");
+			throw new ResourceNotFoundException("Método de aquisição com o código " + id + " não encontrado.");
+	}
+	
+	public void verifyIfacquisitionMethodExistsPOST(String description) {
+		if (repository.findByDescription(description) != null)
+			throw new ConstraintViolationException("Método de aquisição com a descrição \"" + description + "\" já existe.", null, "Unique");
+	}
+	
+	public void verifyIfacquisitionMethodExistsPUT(Long id, String description) {
+		if (repository.findByAcquisitionMethodIdNotAndDescription(id, description) != null)
+			throw new ConstraintViolationException("Já existe um outro método de aquisição com a descrição \"" + description + "\".", null, "Unique");
 	}
 }

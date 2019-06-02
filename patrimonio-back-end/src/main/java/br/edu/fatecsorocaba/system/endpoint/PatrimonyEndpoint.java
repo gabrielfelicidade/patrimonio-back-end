@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.fatecsorocaba.system.config.CustomUserDetails;
 import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.Patrimony;
+import br.edu.fatecsorocaba.system.repository.AcquisitionMethodRepository;
+import br.edu.fatecsorocaba.system.repository.LocationRepository;
 import br.edu.fatecsorocaba.system.repository.PatrimonyRepository;
 import br.edu.fatecsorocaba.system.service.LogService;
 import br.edu.fatecsorocaba.system.util.ExcelGenerator;
@@ -30,6 +32,9 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 
@@ -38,6 +43,10 @@ import org.springframework.http.HttpHeaders;
 public class PatrimonyEndpoint {
 	@Autowired
 	private PatrimonyRepository repository;
+	@Autowired
+	private LocationRepository locationRepository;
+	@Autowired
+	private AcquisitionMethodRepository acquisitionMethodRepository;
 	@Autowired
 	private LogService logService;
 	
@@ -65,6 +74,7 @@ public class PatrimonyEndpoint {
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody Patrimony patrinomy,
 			  					  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		verifyIfEntitysExists(patrinomy);
 		patrinomy = repository.saveAndFlush(patrinomy);
 		logService.saveLog("Cadastro de Patrimônios", "Inserção, ID: " + patrinomy.getPatrimonyId(), customUserDetails);
 		return new ResponseEntity<>(patrinomy, HttpStatus.OK);
@@ -86,6 +96,7 @@ public class PatrimonyEndpoint {
 	public ResponseEntity<?> update(@Validated(OnUpdate.class) @RequestBody Patrimony patrinomy,
 									@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		verifyIfpatrinomyExists(patrinomy.getPatrimonyId());
+		verifyIfEntitysExists(patrinomy);
 		repository.save(patrinomy);
 		logService.saveLog("Edição de Patrimônios", "Alteração, ID: " + patrinomy.getPatrimonyId(),
 				customUserDetails);
@@ -99,6 +110,8 @@ public class PatrimonyEndpoint {
 													@RequestBody List<Patrimony> patrimonies,
 													@AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
 		for (Patrimony patrimony : patrimonies) {
+			verifyIfpatrinomyExists(patrimony.getPatrimonyId());
+			verifyIfEntitysExists(patrimony);
 			patrimony.setStatus(1);
 			patrimony.getLocation();
 			repository.save(patrimony);
@@ -123,6 +136,8 @@ public class PatrimonyEndpoint {
 	public ResponseEntity<?> cancelWriteOff(@Validated(OnUpdate.class) @RequestBody List<Patrimony> patrimonies,
 			  								@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		for (Patrimony patrimony : patrimonies) {
+			verifyIfpatrinomyExists(patrimony.getPatrimonyId());
+			verifyIfEntitysExists(patrimony);
 			patrimony.setStatus(2);
 			repository.save(patrimony);
 		}
@@ -136,6 +151,8 @@ public class PatrimonyEndpoint {
 	public ResponseEntity<?> writeOff(@Validated(OnUpdate.class) @RequestBody List<Patrimony> patrimonies,
 			  						  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		for (Patrimony patrimony : patrimonies) {
+			verifyIfpatrinomyExists(patrimony.getPatrimonyId());
+			verifyIfEntitysExists(patrimony);
 			patrimony.setStatus(0);
 			patrimony.setWriteOffDate(Date.from(Instant.now()));
 			repository.save(patrimony);
@@ -147,5 +164,22 @@ public class PatrimonyEndpoint {
 	public void verifyIfpatrinomyExists(Long id) {
 		if (!repository.findById(id).isPresent())
 			throw new ResourceNotFoundException("Patrinomy with ID " + id + " not found.");
+	}
+	
+	public void verifyIfEntitysExists(Patrimony patrimony) {
+		String message = "";
+		try {
+			patrimony.setAcquisitionMethod(acquisitionMethodRepository.findById(patrimony.getAcquisitionMethod().getAcquisitionMethodId()).orElseThrow());
+		}catch (Exception e) {
+			message += "O método de aquisição informado, com o código " + patrimony.getAcquisitionMethod().getAcquisitionMethodId() + " não foi encontrado. ";
+		}
+		try {
+			patrimony.setLocation(locationRepository.findById(patrimony.getLocation().getLocationId()).orElseThrow());
+		}catch (Exception e) {
+			message += "A localização informada, com o código " + patrimony.getLocation().getLocationId() + " não foi encontrada.";
+		}
+		if (message.length() > 0) {
+			throw new EntityNotFoundException(message);
+		}
 	}
 }
