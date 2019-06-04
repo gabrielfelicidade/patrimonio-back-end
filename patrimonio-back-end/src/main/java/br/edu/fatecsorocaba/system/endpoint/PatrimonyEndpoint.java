@@ -68,6 +68,12 @@ public class PatrimonyEndpoint {
 	public ResponseEntity<?> getAllByStatus(@PathVariable("status") int status) {
 		return new ResponseEntity<>(repository.findByStatus(status), HttpStatus.OK);
 	}
+	
+	@GetMapping("/getWriteOffByYearAndMonth/{year}/{month}")
+	@PreAuthorize("hasRole('BASIC')")
+	public ResponseEntity<?> getAllByStatus(@PathVariable("year") int year, @PathVariable("month")int month) {
+		return new ResponseEntity<>(repository.findByYearAndMonth(year, month), HttpStatus.OK);
+	}
 
 	@Transactional
 	@PostMapping
