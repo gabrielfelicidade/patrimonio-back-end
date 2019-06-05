@@ -33,9 +33,9 @@ public class CustomUserDetails extends User{
 	}
 	
 	private int authoritiesToUserLevel(String authorities) {
-	    if (authorities.contains("ADMIN"))
+	    if (authorities.contains("ROLE_ADMIN"))
 	    	return 2;
-	    else if(authorities.contains("USER"))
+	    else if(authorities.contains("ROLE_INTERMEDIARY"))
 	    	return 1;
 	    return 0;
 	}
