@@ -175,12 +175,12 @@ public class PatrimonyEndpoint {
 	public void verifyIfEntitysExists(Patrimony patrimony) {
 		String message = "";
 		try {
-			patrimony.setAcquisitionMethod(acquisitionMethodRepository.findById(patrimony.getAcquisitionMethod().getAcquisitionMethodId()).orElseThrow());
+			patrimony.setAcquisitionMethod(acquisitionMethodRepository.findById(patrimony.getAcquisitionMethod().getAcquisitionMethodId()).orElseThrow(null));
 		}catch (Exception e) {
 			message += "O método de aquisição informado, com o código " + patrimony.getAcquisitionMethod().getAcquisitionMethodId() + " não foi encontrado. ";
 		}
 		try {
-			patrimony.setLocation(locationRepository.findById(patrimony.getLocation().getLocationId()).orElseThrow());
+			patrimony.setLocation(locationRepository.findById(patrimony.getLocation().getLocationId()).orElseThrow(null));
 		}catch (Exception e) {
 			message += "A localização informada, com o código " + patrimony.getLocation().getLocationId() + " não foi encontrada.";
 		}
