@@ -1,5 +1,6 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +81,7 @@ public class PatrimonyEndpoint {
 	@PreAuthorize("hasRole('INTERMEDIARY')")
 	public ResponseEntity<?> save(@Validated(OnCreate.class) @RequestBody Patrimony patrinomy,
 			  					  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		verifyIfEntitysExists(patrinomy);
+		verifyIfLocationExistsPOST(patrinomy.getPatrimonyId());
 		patrinomy = repository.saveAndFlush(patrinomy);
 		logService.saveLog("Cadastro de Patrimônios", "Inserção, ID: " + patrinomy.getPatrimonyId(), customUserDetails);
 		return new ResponseEntity<>(patrinomy, HttpStatus.OK);
@@ -169,7 +170,12 @@ public class PatrimonyEndpoint {
 
 	public void verifyIfpatrinomyExists(Long id) {
 		if (!repository.findById(id).isPresent())
-			throw new ResourceNotFoundException("Patrinomy with ID " + id + " not found.");
+			throw new ResourceNotFoundException("Patrimônio com o código \"" + id + "\" não encontrado.");
+	}
+	
+	public void verifyIfLocationExistsPOST(Long id) {
+		if (repository.findById(id).isPresent())
+			throw new ConstraintViolationException("Patrimônio com o código \"" + id + "\" já existe.", null, "Unique");
 	}
 	
 	public void verifyIfEntitysExists(Patrimony patrimony) {
