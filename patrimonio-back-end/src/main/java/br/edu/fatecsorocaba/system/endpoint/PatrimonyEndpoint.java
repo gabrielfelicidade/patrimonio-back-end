@@ -174,7 +174,7 @@ public class PatrimonyEndpoint {
 	}
 	
 	public void verifyIfLocationExistsPOST(Long id) {
-		if (repository.findById(id) != null)
+		if (repository.findById(id).isPresent())
 			throw new ConstraintViolationException("Patrimônio com o código \"" + id + "\" já existe.", null, "Unique");
 	}
 	
