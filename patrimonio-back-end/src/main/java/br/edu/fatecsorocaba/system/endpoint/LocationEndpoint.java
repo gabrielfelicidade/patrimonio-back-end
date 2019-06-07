@@ -2,6 +2,7 @@ package br.edu.fatecsorocaba.system.endpoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,10 +68,10 @@ public class LocationEndpoint {
 	}
 	
 	@GetMapping("/report")
-	public ResponseEntity<?> getLocationsPatrimoniesReport() throws JRException {
+	public ResponseEntity<?> getLocationsPatrimoniesReport() {
 
 		try {
-			String jrxmlInput = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/br/edu/fatecsorocaba/system/report/LocationsPatrimonies.jrxml";
+			InputStream jrxmlInput = this.getClass().getClassLoader().getResourceAsStream("reports/LocationsPatrimonies.jrxml");
 			JasperDesign design = JRXmlLoader.load(jrxmlInput);
 			JasperReport jasperReport = JasperCompileManager.compileReport(design);
 			List<Map<String, Object>> lista = service.getLocationsPatrimoniesReport(this.repository);
@@ -90,7 +91,7 @@ public class LocationEndpoint {
 	                .ok()
 	                .headers(headers)
 	                .body(pdfReportStream.toByteArray());
-		} catch (IOException e) {
+		} catch (IOException | JRException e) {
 			e.printStackTrace();
 		}
 		

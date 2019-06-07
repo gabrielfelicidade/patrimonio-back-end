@@ -2,24 +2,22 @@ package br.edu.fatecsorocaba.system.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.util.ResourceUtils;
 
 import br.edu.fatecsorocaba.system.model.Patrimony;
 
 public class ExcelGenerator {
 
-	public static ByteArrayInputStream patrimoniesToExcel(List<Patrimony> patrimonies) throws IOException {
-        File file = ResourceUtils.getFile("classpath:templates\\template.xlsx");
-        try(XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(file.getAbsolutePath())); ByteArrayOutputStream out = new ByteArrayOutputStream();){
+	public ByteArrayInputStream patrimoniesToExcel(List<Patrimony> patrimonies) throws IOException {
+        InputStream file = this.getClass().getClassLoader().getResourceAsStream("templates/template.xlsx");
+        try(XSSFWorkbook workbook = new XSSFWorkbook(file); ByteArrayOutputStream out = new ByteArrayOutputStream();){
         	XSSFSheet sheet = workbook.getSheetAt(0);
         	int rowIndex = 2;
 		   	for (Patrimony patrimony : patrimonies) {

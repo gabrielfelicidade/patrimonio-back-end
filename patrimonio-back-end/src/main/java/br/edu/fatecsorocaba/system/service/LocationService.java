@@ -22,6 +22,9 @@ public class LocationService {
 				item.put("locationDescription", location.getDescription());
 				item.put("patrimonyId", patrimony.getPatrimonyId());
 				item.put("patrimonyDescription", patrimony.getDescription());
+				item.put("patrimonyModel", patrimony.getModel());
+				item.put("patrimonyBrand", patrimony.getBrand());
+				item.put("patrimonyValue", patrimony.getValue());
 				map.add(item);
 			}
 		}
