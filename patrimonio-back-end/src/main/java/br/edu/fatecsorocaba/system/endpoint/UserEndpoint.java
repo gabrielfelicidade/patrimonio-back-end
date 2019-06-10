@@ -98,7 +98,7 @@ public class UserEndpoint {
 		user = repository.findByUsername(customCustomUserDetails.getUsername());
 		user.setPassword(passwordEncoder.encode(password));
 		repository.save(user);
-		logService.saveLog("Altera Senha", "Alteração de Senha",
+		logService.saveLog("Alteração de Senha", "Alteração de Senha",
 				customCustomUserDetails);
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
