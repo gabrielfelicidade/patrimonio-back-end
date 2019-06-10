@@ -1,15 +1,7 @@
 package br.edu.fatecsorocaba.system.endpoint;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,29 +22,17 @@ import br.edu.fatecsorocaba.system.error.ResourceNotFoundException;
 import br.edu.fatecsorocaba.system.model.Location;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnCreate;
 import br.edu.fatecsorocaba.system.validationInterfaces.OnUpdate;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import br.edu.fatecsorocaba.system.repository.LocationRepository;
-import br.edu.fatecsorocaba.system.service.LocationService;
 import br.edu.fatecsorocaba.system.service.LogService;
 
 @RestController
 @RequestMapping("locations")
 public class LocationEndpoint {
+	
 	@Autowired
 	private LocationRepository repository;
 	@Autowired
 	private LogService logService;
-	private LocationService service = new LocationService();
 	
 	@GetMapping
 	@PreAuthorize("hasRole('BASIC')")
@@ -65,37 +45,6 @@ public class LocationEndpoint {
 	public ResponseEntity<?> getById(@PathVariable("id") Long id) {
 		verifyIfLocationExists(id);
 		return new ResponseEntity<>(repository.findById(id).orElse(null), HttpStatus.OK);
-	}
-	
-	@GetMapping("/report")
-	public ResponseEntity<?> getLocationsPatrimoniesReport() {
-
-		try {
-			InputStream jrxmlInput = this.getClass().getClassLoader().getResourceAsStream("reports/LocationsPatrimonies.jrxml");
-			JasperDesign design = JRXmlLoader.load(jrxmlInput);
-			JasperReport jasperReport = JasperCompileManager.compileReport(design);
-			List<Map<String, Object>> lista = service.getLocationsPatrimoniesReport(this.repository);
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, new HashMap<>(), new JRBeanCollectionDataSource(lista));
-			JRPdfExporter pdfExporter = new JRPdfExporter();
-			pdfExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
-			pdfExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
-			pdfExporter.exportReport();
-			
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("Content-Disposition", "attachment; filename=report.pdf");
-			
-			pdfReportStream.close();
-			
-			return ResponseEntity
-	                .ok()
-	                .headers(headers)
-	                .body(pdfReportStream.toByteArray());
-		} catch (IOException | JRException e) {
-			e.printStackTrace();
-		}
-		
-		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	@Transactional
@@ -144,4 +93,5 @@ public class LocationEndpoint {
 		if (repository.findByLocationIdNotAndDescription(id, description) != null)
 			throw new ConstraintViolationException("Já existe uma outra localização com a descrição \"" + description + "\".", null, "Unique");
 	}
+	
 }

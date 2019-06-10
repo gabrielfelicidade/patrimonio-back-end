@@ -14,7 +14,7 @@ import br.edu.fatecsorocaba.system.repository.LocationRepository;
 @Component
 public class LocationService {
 	
-	public List<Map<String, Object>> getLocationsPatrimoniesReport(LocationRepository repository){
+	public List<Map<String, Object>> getLocationsPatrimoniesReportData(LocationRepository repository){
 		List<Map<String, Object>> map = new ArrayList<>();
 		for(Location location : repository.findAll()) {
 			for(Patrimony patrimony : location.getPatrimonies()) {
