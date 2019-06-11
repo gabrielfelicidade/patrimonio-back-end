@@ -163,12 +163,12 @@ public class PatrimonyEndpoint {
 
 	public void verifyIfpatrinomyExists(Long id) {
 		if (!repository.findById(id).isPresent())
-			throw new ResourceNotFoundException("Patrimônio com o código \"" + id + "\" não encontrado.");
+			throw new ResourceNotFoundException("Patrimônio com o número \"" + id + "\" não encontrado.");
 	}
 
 	public void verifyIfLocationExistsPOST(Long id) {
 		if (repository.findById(id).isPresent())
-			throw new ConstraintViolationException("Patrimônio com o código \"" + id + "\" já existe.", null, "Unique");
+			throw new ConstraintViolationException("Patrimônio de número \"" + id + "\" já existe.", null, "Unique");
 	}
 
 	public void verifyIfEntitysExists(Patrimony patrimony) {
