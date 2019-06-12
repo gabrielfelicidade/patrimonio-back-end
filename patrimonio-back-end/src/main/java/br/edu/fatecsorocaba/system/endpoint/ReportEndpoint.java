@@ -3,6 +3,7 @@ package br.edu.fatecsorocaba.system.endpoint;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.fatecsorocaba.system.model.Patrimony;
 import br.edu.fatecsorocaba.system.repository.LocationRepository;
 import br.edu.fatecsorocaba.system.repository.PatrimonyRepository;
 import br.edu.fatecsorocaba.system.service.LocationService;
@@ -43,7 +45,7 @@ public class ReportEndpoint {
 	private LocationService locationService = new LocationService();
 	private PatrimonyService patrimonyService = new PatrimonyService();
 
-	@GetMapping("LocationsPatrimonies")
+	@GetMapping("locationsPatrimonies")
 	public ResponseEntity<?> getLocationsPatrimoniesReport() {
 
 		try {
@@ -74,7 +76,7 @@ public class ReportEndpoint {
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
-	@GetMapping("WritedOffByYearAndMonth/{year}/{month}")
+	@GetMapping("writedOffByYearAndMonth/{year}/{month}")
 	public ResponseEntity<?> getWritedOffByYearAndMonth(@PathVariable("year") int year,
 			@PathVariable("month") int month) {
 		try {
@@ -106,6 +108,44 @@ public class ReportEndpoint {
 		}
 
 		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	@GetMapping("getMinMaxYearWritedOff")
+	public ResponseEntity<?> getMinMaxYearWritedOff() {
+		int actualYear = Calendar.getInstance().get(Calendar.YEAR);
+		int minYear = actualYear, maxYear = actualYear;
+		for (Patrimony patrimony : this.patrimonyRepository.findByStatus(0)) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(patrimony.getWriteOffDate());
+			int elementYear = calendar.get(Calendar.YEAR);
+			if(elementYear < minYear) minYear = elementYear;
+			if(elementYear > maxYear) maxYear = elementYear;
+		}
+		
+		@SuppressWarnings("unused")
+		final class ReturnType {
+			private int minYear;
+			private int maxYear;
+			
+			public int getMinYear() {
+				return minYear;
+			}
+			public void setMinYear(int minYear) {
+				this.minYear = minYear;
+			}
+			public int getMaxYear() {
+				return maxYear;
+			}
+			public void setMaxYear(int maxYear) {
+				this.maxYear = maxYear;
+			}
+		}
+		
+		ReturnType obj = new ReturnType();
+		obj.minYear = minYear;
+		obj.maxYear = maxYear;
+		
+		return new ResponseEntity<>(obj, HttpStatus.OK);
 	}
 
 }
