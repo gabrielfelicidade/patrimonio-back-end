@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Leaf_Red" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8e15d519-eab3-497d-b483-a5c1caac3ee0">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Leaf_Red" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8e15d519-eab3-497d-b483-a5c1caac3ee0">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<style name="Title" fontName="Arial" fontSize="26" isBold="true"/>
-	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
-	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
-	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Title" fontSize="26" isBold="true"/>
+	<style name="SubTitle" forecolor="#666666" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontSize="12" isBold="true"/>
+	<style name="Detail" fontSize="12"/>
 	<parameter name="year" class="java.lang.Integer" isForPrompting="false"/>
 	<parameter name="month" class="java.lang.Integer" isForPrompting="false"/>
 	<queryString>
@@ -24,7 +24,7 @@
 			<textField>
 				<reportElement x="0" y="20" width="544" height="40" uuid="e3d2c118-8ebd-4e5c-861b-b87b40eeff34"/>
 				<textElement>
-					<font fontName="Arial" size="26"/>
+					<font size="26"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Patrimônios Baixados em " + $P{month} + "/" + $P{year}]]></textFieldExpression>
 			</textField>
@@ -34,7 +34,50 @@
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="1" splitType="Stretch"/>
+		<band height="52" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="100" y="18" width="150" height="20" uuid="14b3b40f-6c6a-4131-a17d-83d8866beadd">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9cfc0311-4924-43c1-b040-376ef3a9c978"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="18" width="70" height="20" uuid="bbc8e48a-ec11-4787-9cbe-08db5e333e85">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ed7940d2-fa8b-494b-9799-1fdc4299ba2f"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Número]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="22" y="47" width="510" height="1" uuid="80ad02d2-e9df-4d80-bc69-30cdb191a152"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="250" y="17" width="107" height="21" uuid="17747b74-6f85-4fb3-8b62-aded28991412">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9cfc0311-4924-43c1-b040-376ef3a9c978"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Modelo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="357" y="17" width="83" height="21" uuid="47a74d75-8f4e-4319-a414-e9a5ee95d017">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9cfc0311-4924-43c1-b040-376ef3a9c978"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Marca]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="440" y="17" width="83" height="21" uuid="1eaf4301-b983-4562-83ef-a101432555dd">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9cfc0311-4924-43c1-b040-376ef3a9c978"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+		</band>
 	</columnHeader>
 	<detail>
 		<band height="39" splitType="Stretch">
@@ -71,7 +114,7 @@
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f819ca10-7bc7-4c71-bb33-26268cfea60d"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[new DecimalFormat("R$ #,##0.00").format($F{patrimonyValue}.doubleValue())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("R$ #,##0.00").format($F{patrimonyValue} == null ? 0 : $F{patrimonyValue}.doubleValue())]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -99,11 +142,22 @@
 				<textElement>
 					<font size="10" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date())]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
 	<summary>
 		<band splitType="Stretch"/>
 	</summary>
+	<noData>
+		<band height="69">
+			<staticText>
+				<reportElement style="Detail" x="180" y="20" width="200" height="30" uuid="64e530bf-608f-447c-8b26-2beff66d19e2"/>
+				<textElement>
+					<font size="13"/>
+				</textElement>
+				<text><![CDATA[Nenhum registro encontrado.]]></text>
+			</staticText>
+		</band>
+	</noData>
 </jasperReport>

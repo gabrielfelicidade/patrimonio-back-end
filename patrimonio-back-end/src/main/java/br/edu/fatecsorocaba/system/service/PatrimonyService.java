@@ -13,7 +13,7 @@ import br.edu.fatecsorocaba.system.repository.PatrimonyRepository;
 @Component
 public class PatrimonyService {
 
-	public List<Map<String, Object>> getPatrimoniesWritedOffByDate(PatrimonyRepository repository, int year, int month){
+	public List<Map<String, Object>> getPatrimoniesWritedOffByDateReportData(PatrimonyRepository repository, int year, int month){
 		List<Map<String, Object>> map = new ArrayList<>();
 		for(Patrimony patrimony : repository.findByYearAndMonth(year, month)) {
 			Map<String, Object> item = new HashMap<>();

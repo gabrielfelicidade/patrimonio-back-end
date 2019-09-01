@@ -36,15 +36,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		try {
-	    	User user = null;
-		    try {
-		    	user = new ObjectMapper().readValue(request.getInputStream(), User.class);
-		    }
-		    catch (UnrecognizedPropertyException exception){
-		    	user = new User();
-		    	user.setUsername("");
-		    	user.setPassword("");
-		    }
+			User user = null;
+			try {
+				user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+			} catch(UnrecognizedPropertyException e)
+			{
+				user = new User();
+				user.setUsername("");
+				user.setPassword("");
+			}
 			return this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 		} catch (IOException e) {
 			throw new RuntimeException(e); 
