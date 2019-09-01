@@ -18,6 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import br.edu.fatecsorocaba.system.model.User;
 import io.jsonwebtoken.Header;
@@ -35,7 +36,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		try {
-			User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+	    	User user = null;
+		    try {
+		    	user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+		    }
+		    catch (UnrecognizedPropertyException exception){
+		    	user = new User();
+		    	user.setUsername("");
+		    	user.setPassword("");
+		    }
 			return this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 		} catch (IOException e) {
 			throw new RuntimeException(e); 
