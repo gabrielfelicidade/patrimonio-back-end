@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Leaf_Red" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8e15d519-eab3-497d-b483-a5c1caac3ee0">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"  whenNoDataType="NoDataSection" name="Leaf_Red" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8e15d519-eab3-497d-b483-a5c1caac3ee0">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Title" fontSize="26" isBold="true"/>
 	<style name="SubTitle" forecolor="#666666" fontSize="18"/>
@@ -15,7 +15,7 @@
 	<field name="patrimonyModel" class="java.lang.String"/>
 	<field name="patrimonyBrand" class="java.lang.String"/>
 	<field name="patrimonyValue" class="java.math.BigDecimal"/>
-	<group name="groupLocationDescription" preventOrphanFooter="true">
+	<group name="groupLocationDescription" preventOrphanFooter="true" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{locationDescription}]]></groupExpression>
 		<groupHeader>
 			<band height="85">

@@ -12,6 +12,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.NotFound;
@@ -31,8 +32,9 @@ public class Patrimony {
 	private Long patrimonyId;
 
 	@Column(name = "acquisition_process_id")
+	@NotEmpty(groups = {OnUpdate.class, OnCreate.class}, message = "The field 'acquisition process id' cannot be null")
 	private String acquisitionProcessId;
-
+	
 	@Column(name = "serial_number")
 	private String serialNumber;
 

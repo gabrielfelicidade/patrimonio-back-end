@@ -30,5 +30,22 @@ public class LocationService {
 		}
 		return map;
 	}
-
+	
+	public List<Map<String, Object>> getLocationsPatrimoniesReportData(LocationRepository repository, long id){
+		List<Map<String, Object>> map = new ArrayList<>();
+		Location location = repository.findById(id).orElse(null);
+		if (location != null) {
+			for(Patrimony patrimony : location.getPatrimonies()) {
+				Map<String, Object> item = new HashMap<>();
+				item.put("locationDescription", location.getDescription());
+				item.put("patrimonyId", patrimony.getPatrimonyId());
+				item.put("patrimonyDescription", patrimony.getDescription());
+				item.put("patrimonyModel", patrimony.getModel());
+				item.put("patrimonyBrand", patrimony.getBrand());
+				item.put("patrimonyValue", patrimony.getValue());
+				map.add(item);
+			}
+		}
+		return map;
+	}
 }

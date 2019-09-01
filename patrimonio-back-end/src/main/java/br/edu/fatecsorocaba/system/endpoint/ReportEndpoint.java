@@ -75,6 +75,36 @@ public class ReportEndpoint {
 
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
+	
+	@GetMapping("locationsPatrimonies/{id}")
+	public ResponseEntity<?> getLocationPatrimoniesReportById(@PathVariable("id") Long id) {
+		try {
+			InputStream jrxmlInput = this.getClass().getClassLoader()
+					.getResourceAsStream("reports/LocationsPatrimonies.jrxml");
+			JasperDesign design = JRXmlLoader.load(jrxmlInput);
+			JasperReport jasperReport = JasperCompileManager.compileReport(design);
+			List<Map<String, Object>> lista = locationService
+					.getLocationsPatrimoniesReportData(this.locationRepository, id);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, new HashMap<>(),
+					new JRBeanCollectionDataSource(lista));
+			JRPdfExporter pdfExporter = new JRPdfExporter();
+			pdfExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
+			pdfExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
+			pdfExporter.exportReport();
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Content-Disposition", "attachment; filename=report.pdf");
+
+			pdfReportStream.close();
+
+			return ResponseEntity.ok().headers(headers).body(pdfReportStream.toByteArray());
+		} catch (IOException | JRException e) {
+			e.printStackTrace();
+		}
+
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
 
 	@GetMapping("writedOffByYearAndMonth/{year}/{month}")
 	public ResponseEntity<?> getWritedOffByYearAndMonth(@PathVariable("year") int year,
