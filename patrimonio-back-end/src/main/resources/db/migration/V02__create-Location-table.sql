@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[Location](
-	[location_id] [bigint] IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	[description] [varchar](100) NOT NULL UNIQUE
+CREATE TABLE `dbPatrimonySystem`.`Location`(
+	`location_id` bigint AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`description` varchar(100) NOT NULL UNIQUE
 );
