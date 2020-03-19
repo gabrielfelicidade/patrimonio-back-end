@@ -1,2 +1,2 @@
-ALTER TABLE [dbo].[Patrimony]
-ALTER COLUMN [acquisition_process_id] [varchar](20) NOT NULL
+ALTER TABLE `dbPatrimonySystem`.`Patrimony`
+MODIFY `acquisition_process_id` varchar(20) NOT NULL
