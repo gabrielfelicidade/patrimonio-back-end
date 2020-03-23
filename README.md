@@ -2,7 +2,7 @@
 
 ### How to build the project
 ```
-./mvnw clean install
+./mvnw clean install -DskipTests
 ```
 
 ### How to run the project
